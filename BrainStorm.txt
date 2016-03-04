@@ -1,0 +1,25 @@
+DB 
+
+Songs:
+name
+//written by 
+//lyrics 
+//first released
+
+(scrape from http://bobdylan.com/songs-played-live/)
+
+Shows:
+venue
+location
+date
+setlist id
+
+Setlist:
+song 
+show
+order
+
+(start here: http://bobdylan.com/date/1960-05-01-home-karen-wallace/,
+follow next links)
+
+

@@ -1,0 +1,23 @@
+{
+  "name": "dylan-live-api",
+  "version": "1.0.0",
+  "description": "An API for data on Bob Dylan's live performances",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.13.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dryanmas/DylanLiveAPI.git"
+  },
+  "author": "Diandra Ryan-Mas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dryanmas/DylanLiveAPI/issues"
+  },
+  "homepage": "https://github.com/dryanmas/DylanLiveAPI#readme"
+}
