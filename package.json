@@ -4,6 +4,8 @@
   "description": "An API for data on Bob Dylan's live performances",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.9.1",
+    "cheerio": "^0.20.0",
     "express": "^4.13.4"
   },
   "devDependencies": {},
