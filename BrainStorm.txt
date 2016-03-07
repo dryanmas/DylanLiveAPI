@@ -1,4 +1,11 @@
-DB 
+DB
+
+TO-DO:
+[ ] pull more song information
+[ ] format date 
+[ ] add tests
+[ ] refactor
+[ ] creat db 
 
 Songs:
 name
@@ -17,7 +24,7 @@ setlist id
 Setlist:
 song 
 show
-order
+rank
 
 (start here: http://bobdylan.com/date/1960-05-01-home-karen-wallace/,
 follow next links)

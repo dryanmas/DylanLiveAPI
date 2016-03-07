@@ -5,4 +5,4 @@ var Scraper = require('./scraper/scraper');
 
 app.listen(4321);
 
-Scraper.getSongsHTML();
+Scraper.getShows();

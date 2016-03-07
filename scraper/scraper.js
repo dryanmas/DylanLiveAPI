@@ -5,35 +5,46 @@ var songsUrl = "http://bobdylan.com/songs-played-live/";
 
 var Scraper = {};
 
-Scraper.getSongsHTML = function() { 
-	axios.get(songsUrl)
+Scraper.getShows = function() {
+	var shows = [];
+	parseShowUrl(firstShowUrl, shows);
+}
+
+var parseShowUrl = function(url, shows) {
+	axios.get(url)
 	.then(function(response){
-		siftSongs(response.data);
-	}) 
+		siftShow(response.data, shows, url);
+	})
 }
 
-var siftSongs = function(html) {
+var siftShow = function(html, shows, url) {
 	var $ = cheerio.load(html);
-	
-	var songAttr = function(el, className) {
-		return $(el).find(className).find('a').text();
+
+	var show = {};
+
+	show.url = url;
+	//TODO: format date
+	show.date = $('.details').find('.date').text();
+	show.location = $('.details').find('.headline').text();
+	show.venue = $('.details').find('.venue').find('a').text();
+	show.setlist = $('.set-list').find('li').map(function(){
+		return $(this).find('a').text();
+	}).get();
+
+	shows.push(show);
+
+	var nextUrl = $('.next').find('a').prop('href');
+
+	if (nextUrl) {
+		parseShowUrl(nextUrl, shows);
+	} else {
+		console.log('random show', shows[50]);
+		//enter into DB
 	}
 
-	var parseSong = function(i, songEl) {
-		var song = {};
-
- 		song.title = songAttr(this, '.song');
- 		song.release = songAttr(this, '.release')
-		song.played = songAttr(this, '.times');
-
-		return song;
-	}
-
-	var songs = $('.line_detail').map(parseSong).get();
-	//TODO: enter songs into database
 }
 
-// Scraper.getShows 
+
 
 
 
