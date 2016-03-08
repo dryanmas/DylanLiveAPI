@@ -1,8 +1,8 @@
 var express = require('express');
 var app = express();
 
-var Scraper = require('./scraper/scraper');
+var songScraper = require('./scraper/songScraper');
 
 app.listen(4321);
 
-Scraper.getShows();
+songScraper();
