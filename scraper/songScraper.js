@@ -21,7 +21,6 @@ var parseAllSongs = function(html) {
 	}).get();
 	
 	var newSongs = allSongs.filter(isNew);
-
 	getNextSong(newSongs);
 }
 
@@ -42,6 +41,10 @@ var isNew = function(songName){
 }
 
 var getNextSong = function(songs) {
+	if (!songs.length) {
+		console.log('donesies')
+		return;
+	}
 	var url = songs[0].url;
 
 	axios.get(url)
@@ -56,14 +59,39 @@ var parseSong = function(songs, html){
 	var song = songs[0];
 	songs = songs.slice(1);
 
-	//TODO: check the lyrics logic
 	song.credit = $('.credit').text().substring(16);
-	song.lyrics = $('.lyrics').text(); 
-
+	song.lyrics = parseLyrics($('.lyrics').text()); 
 
 	//TODO: DB logic
 	songsDB.push(song);
 	getNextSong(songs);
+}
+
+var parseLyrics = function(lyrics){
+	if (!lyrics) return "";
+
+	//checks for non lyric entries
+	var i = lyrics.indexOf("to see a list of");
+	if (i >= 0) return "";
+	
+	//finds first index that is a letter
+	var j = 0;
+	while (j < lyrics.length && !isLetter(lyrics[j])) j++;
+
+	//finds index of copyright, which will come
+	//after the lyrics proper
+	var k = lyrics.indexOf("Copyright");
+	if (k === -1) 
+		k = lyrics.length;
+
+	return lyrics.substring(j, k);
+}
+
+var isLetter = function(str) {
+	if (typeof str !== 'string') return false;
+
+	str = str.toLowerCase(); 
+	return str.length === 1 && str.match(/[a-z]/i);
 }
 
 module.exports = getAllSongs;
