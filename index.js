@@ -1,8 +1,10 @@
 var express = require('express');
 var app = express();
 
-var songScraper = require('./scraper/songScraper');
+var songScraper = require('./scrapers/SongScraper');
+var showScraper = require('./scrapers/ShowScraper');
 
 app.listen(4321);
 
-songScraper();
+// songScraper();
+showScraper();
