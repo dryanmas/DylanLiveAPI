@@ -2,10 +2,10 @@ DB
 
 TO-DO:
 [x] pull more song information
-[ ] format date 
+[x] format date 
 [ ] add tests
-[ ] refactor
-[ ] creat db 
+[x] refactor
+[ ] create db 
 
 Songs:
 name

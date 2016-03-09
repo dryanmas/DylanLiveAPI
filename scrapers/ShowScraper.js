@@ -43,8 +43,6 @@ var buildShow = function(html, url) {
 		return $(this).find('a').text();
 	}).get();
 
-	console.log(show.date);
-
 	showsDB.push(show);
 
 	var nextUrl = getNextUrl($)
