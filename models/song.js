@@ -11,10 +11,10 @@ Song.findByTitle = function(title) {
 
 Song.insert = function(song) {
 	return Song.findByTitle(song.title)
-	.then(function(song) {
-		if (song) throw 400;
+	.then(function(exists) {
+		if (exists) throw 400;
 
-		return db('songs').insert(song); 
+		return db('songs').insert(song).returning('title'); 
 	})
 }
 

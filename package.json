@@ -5,14 +5,21 @@
   "main": "index.js",
   "dependencies": {
     "axios": "^0.9.1",
+    "chai": "^3.5.0",
     "cheerio": "^0.20.0",
     "express": "^4.13.4",
     "knex": "^0.10.0",
-    "pg": "^4.5.1"
+    "mocha": "^2.4.5",
+    "pg": "^4.5.1",
+    "supertest": "^1.2.0",
+    "supertest-as-promised": "^3.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "chai": "^3.5.0"
+    },
   "scripts": {
-    "test": "npm test"
+    "test": "NODE_ENV=test mocha"
   },
   "repository": {
     "type": "git",
