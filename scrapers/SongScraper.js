@@ -29,8 +29,8 @@ var buildSong = function($, el) {
 
 	song.title = $(el).find('.song').find('a').text();
 	song.release = $(el).find('.release').find('a').text();
-	song.played = $(el).find('.times').find('a').text();
 	song.url = $(el).find('.song').find('a').prop('href');
+	// song.played = $(el).find('.times').find('a').text();
 
 	return song;
 }

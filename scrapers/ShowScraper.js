@@ -81,9 +81,7 @@ var formatDate = function(date) {
 	date += '-' + months[month];
 	date += '-' + day;
 
-	var timestamp = new Date(date).getTime();
-
-	return Math.floor(timestamp / 1000);
+	return date;
 }
 
 var getNextUrl = function($){
