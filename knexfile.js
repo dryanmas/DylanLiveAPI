@@ -10,7 +10,7 @@ module.exports = {
   test: {
     client: 'postgresql',
     connection: {
-      database: 'dylan_live'
+      database: 'dylan_live_test'
     },
     pool: {
       min: 2,

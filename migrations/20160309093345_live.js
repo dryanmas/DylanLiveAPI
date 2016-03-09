@@ -24,7 +24,7 @@ exports.up = function(knex, Promise) {
   			.references('id').inTable('songs');
   		live_song.integer('show_id').notNullable()
   			.references('id').inTable('shows');
-  		live_song.interger('rank').notNullable();
+  		live_song.integer('rank').notNullable();
   	})
   ])
 };
