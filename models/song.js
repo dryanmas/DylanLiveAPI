@@ -14,8 +14,13 @@ Song.insert = function(song) {
 	.then(function(exists) {
 		if (exists) throw 400;
 		
-		return db('songs').insert(song).returning('title'); 
+		return db('songs').insert(song).returning('id'); 
 	})
+	.then(pluckFirst)
+}
+
+var pluckFirst = function(rows) {
+	return rows[0];
 }
 
 var findBy = function(key, value) {
@@ -24,9 +29,7 @@ var findBy = function(key, value) {
 
 	return db('songs').select('*')
 	.where(criteria)
-	.then(function(rows){
-		return rows[0];
-	})
+	.then(pluckFirst)
 }
 
 module.exports = Song;

@@ -15,8 +15,9 @@ Show.insert = function(show) {
 	.then(function(exists) {
 		if (exists) throw 400;
 		
-		return db('shows').insert(show).returning('date');
+		return db('shows').insert(show).returning('id');
 	})
+	.then(pluckFirst);
 }
 
 Show.mostRecent = function() {
@@ -35,9 +36,11 @@ Show.mostRecent = function() {
 
 		return db('shows').select('*').where({id: mostRecent.id})
 	})
-	.then(function(rows) {
-		return rows[0];
-	})
+	.then(pluckFirst);
+}
+
+var pluckFirst = function(rows) {
+	return rows[0];
 }
 
 var findBy = function(key, value) {
@@ -46,9 +49,7 @@ var findBy = function(key, value) {
 
 	return db('shows').select('*')
 	.where(criteria)
-	.then(function(rows){
-		return rows[0];
-	})
+	.then(pluckFirst)
 }
 
 var compare = function(d1, d2) {

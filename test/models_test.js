@@ -1,6 +1,7 @@
 var db = require('../db.js');
 var Song = require('../models/song');
 var Show = require('../models/show');
+var Setlist = require('../models/setlist');
 
 var expect = require('chai').expect;
 
@@ -19,7 +20,6 @@ var song2 = {
 	credit: "",
 	lyrics: ""
 }
-
 
 var show1 = {
 	date: 'Apr 2 2015',
@@ -42,9 +42,8 @@ describe('Songs', function() {
 
 	it('can add songs', function() {
 		return Song.insert(song1)
-		.then(function(rows) {
-			expect(rows).to.have.length(1);
-			expect(rows[0]).to.equal(song1.title);
+		.then(function(id) {
+			expect(typeof id).to.equal('number');
 		})
 	})
 
@@ -70,8 +69,8 @@ describe('Shows', function() {
 
 	it('can add a show', function() {
 		return Show.insert(show1)
-		.then(function(rows) {
-			expect(rows[0]).to.equal(show1.date);
+		.then(function(id) {
+			expect(typeof id).to.equal('number');
 		})
 	})
 
@@ -105,7 +104,88 @@ describe('Shows', function() {
 
 describe('Setlists', function() {
 		beforeEach(function() {
-			return db('shows').del();
+			return db('live_songs').del()
+			.then(function() {
+				return db('shows').del()
+			})
+			.then(function() {
+				return db('songs').del()
+			})
+			.then(function() {
+				return Song.insert(song1)
+			})
+			.then(function(id) {
+				song1.id = id;
+
+				return Song.insert(song2)
+			})
+			.then(function(id) {
+				song2.id = id;
+
+				return Show.insert(show1)
+			})
+			.then(function(id) {
+				show1.id = id;
+			})
+		})
+
+		it('can add a song', function() {
+			var live_song = {
+				song_id: song1.id,
+				show_id: show1.id,
+				rank: 1
+			}
+
+			return Setlist.insert(live_song)
+			.then(function(id) {
+				expect(typeof id).to.equal('number');
+			})
+		})
+
+		it('cannot add the same song to the same show twice', function() {
+			var live_song = {
+				song_id: song1.id,
+				show_id: show1.id,
+				rank: 1
+			}
+
+			return Setlist.insert(live_song)
+			.then(function() {
+				return Setlist.insert(live_song)
+			})
+			.then(function(id) {
+				expect(id).to.equal(undefined);
+			})
+			.catch(function(err) {
+				expect(err).to.equal(400);
+			})
+		})
+
+
+		it('cannot have two songs in the same rank for a single show', function() {
+			var live_song1 = {
+				song_id: song1.id,
+				show_id: show1.id,
+				rank: 1
+			}
+
+			var live_song2 = {
+				song_id: song2.id,
+				show_id: show1.id,
+				rank: 1
+			}
+
+			return Setlist.insert(live_song1)
+			.then(function() {
+				return Setlist.insert(live_song2)
+			})
+			.then(function(id) {
+				expect(id).to.equal(undefined);
+			})
+			.catch(function(err) {
+				expect(err).to.equal(400);
+			})
+
 		})
 
 })
