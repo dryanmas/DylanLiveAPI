@@ -37,7 +37,10 @@ var show2 = {
 
 describe('Songs', function() {
 	beforeEach(function() {
-		return db('songs').del();
+		return db('live_songs').del()
+		.then(function() {
+			return db('songs').del();
+		})
 	})
 
 	it('can add songs', function() {
@@ -64,8 +67,10 @@ describe('Songs', function() {
 
 describe('Shows', function() {
 	beforeEach(function() {
-		return db('shows').del();
-	})
+		return db('live_songs').del()
+		.then(function() {
+			return db('shows').del();
+		})	})
 
 	it('can add a show', function() {
 		return Show.insert(show1)
@@ -116,12 +121,10 @@ describe('Setlists', function() {
 			})
 			.then(function(id) {
 				song1.id = id;
-
 				return Song.insert(song2)
 			})
 			.then(function(id) {
 				song2.id = id;
-
 				return Show.insert(show1)
 			})
 			.then(function(id) {
@@ -139,6 +142,32 @@ describe('Setlists', function() {
 			return Setlist.insert(live_song)
 			.then(function(id) {
 				expect(typeof id).to.equal('number');
+			})
+		})
+
+		it('must have valid show and song ids', function() {
+			var live_song = {
+				song_id: 6.5,
+				show_id: show1.id,
+				rank: 1
+			}
+
+			return Setlist.insert(live_song)
+			.then(function(id) {
+				expect(id).to.equal(undefined)
+			})
+			.catch(function(err) {
+				expect(err).to.equal(400)
+
+				live_song.song_id = song1.id
+				live_song.show_id = 77
+				return Setlist.insert(live_song)
+			})
+			.then(function(id) {
+				expect(id).to.equal(undefined)
+			})
+			.catch(function(err) {
+				expect(err).to.equal(400)
 			})
 		})
 
