@@ -1,18 +1,25 @@
 var axios = require('axios');
 var cheerio = require('cheerio');
+var Promise = require('bluebird');
+var Song = require('../models/song');
 
-//MOCK DB
-var songsDB = [];
-
-var getAllSongs = function() {
+var SongScraper = function(){
 	var songsUrl = "http://bobdylan.com/songs-played-live/";
-
-	axios.get(songsUrl)
-	.then(function(response){
-		parseAllSongs(response.data);
-	}) 
+	
+	return axios.get(songsUrl)
+	.then(function(resp) {
+		return parseAllSongs(resp.data);
+	})
+	.then(function(songs) {
+		return Promise.all(songs.map(getSong));
+	})
+	.then(function(songs) {
+		return Promise.all(songs.map(Song.insert))
+	})
 }
 
+//builds out basic info on each song 
+//filters out the songs that are already stored in the DB
 var parseAllSongs = function(html) {
 	var $ = cheerio.load(html);
 
@@ -20,10 +27,15 @@ var parseAllSongs = function(html) {
 		return buildSong($, el);
 	}).get();
 	
-	var newSongs = allSongs.filter(isNew);
-	getNextSong(newSongs);
+	return Promise.all(allSongs.map(isNew))
+	.then(function(newSongs) {
+		return allSongs.filter(function(song, i) {
+			return newSongs[i];
+		})
+	})
 }
 
+//grabs the basic title, release, url information for a song
 var buildSong = function($, el) {
 	var song = {};
 
@@ -35,38 +47,33 @@ var buildSong = function($, el) {
 	return song;
 }
 
-var isNew = function(songName){
-		//TODO: check database
-	return true;
-}
-
-var getNextSong = function(songs) {
-	if (!songs.length) {
-		console.log('donesies')
-		return;
-	}
-	var url = songs[0].url;
-
-	axios.get(url)
-	.then(function(response){
-		parseSong(songs, response.data);
+//checks to see if a song is not already in the DB
+var isNew = function(song){
+	return Song.findByTitle(song.title)
+	.then(function(exists) {
+		return !exists;
 	})
 }
 
-var parseSong = function(songs, html){
-	$ = cheerio.load(html);
+//gets HTML for an individual song
+//and parses for lyric data 
+var getSong = function(song, i, songs) {
+	return axios.get(song.url)
+	.then(function(resp) {
+		parseSong(song, resp.data);
+		return songs;
+	})
+}
 
-	var song = songs[0];
-	songs = songs.slice(1);
+//grabs credit and lyric information for a song
+var parseSong = function(song, html){
+	$ = cheerio.load(html);
 
 	song.credit = $('.credit').text().substring(16);
 	song.lyrics = parseLyrics($('.lyrics').text()); 
-
-	//TODO: DB logic
-	songsDB.push(song);
-	getNextSong(songs);
 }
 
+//removes unnecessary text from the lyrics 
 var parseLyrics = function(lyrics){
 	if (!lyrics) return "";
 
@@ -87,6 +94,7 @@ var parseLyrics = function(lyrics){
 	return lyrics.substring(j, k);
 }
 
+//returns if a character is a letter or not 
 var isLetter = function(str) {
 	if (typeof str !== 'string') return false;
 
@@ -94,4 +102,4 @@ var isLetter = function(str) {
 	return str.length === 1 && str.match(/[a-z]/i);
 }
 
-module.exports = getAllSongs;
+module.exports = SongScraper;

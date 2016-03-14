@@ -1,7 +1,7 @@
 var db = require('../db');
 var Song = {};
 
-Song.findByTitle = function(title) { 
+Song.findByTitle = function(title) {
 	return findBy('title', title);
 }
 

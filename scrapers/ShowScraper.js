@@ -1,30 +1,36 @@
 var axios = require('axios');
 var cheerio = require('cheerio');
 
-//MOCK DB
-var showsDB = [];
+var Song = require('../models/song.js');
+var Show = require('../models/show.js');
+var Setlist = require('../models/setlist.js');
 
 var getShows = function() {
-	parseNextShow(startUrl(), buildShow);
+	return startUrl()
+	.then(function(url) {
+		return parseNextShow(url, buildShow)
+	})
 }
 
 var startUrl = function() {
 	var firstShow = "http://bobdylan.com/date/1960-05-01-home-karen-wallace/";
-
-	/* TODO: check DB for most recent show and so forth
-		var mostRecent = ...
-		parseNextShow(mostRecent.url, function(html){
-		
-		})
 	
-	*/
-	return firstShow; 
+	return Song.mostRecent()
+	.then(function(show) {
+		if (!show) return firstShow;
+
+		return parseNextShow(show.url, function(html) {
+			var $ = cheerio.load(html);
+
+			return getNextUrl($);
+		})
+	})
 }
 
 var parseNextShow = function(url, callback) {
-	axios.get(url)
+	return axios.get(url)
 	.then(function(response){
-		callback(response.data, url);
+		return callback(response.data, url);
 	})
 }
 
@@ -33,55 +39,30 @@ var buildShow = function(html, url) {
 
 	var show = {};
 
-	var rawDate = $('.details').find('.date').text();
-
-	show.date = formatDate(rawDate);
 	show.url = url;
+	show.date = $('.details').find('.date').text();
 	show.location = $('.details').find('.headline').text();
 	show.venue = $('.details').find('.venue').find('a').text();
-	show.setlist = $('.set-list').find('li').map(function(){
+	
+	var setlist = $('.set-list').find('li').map(function(){
 		return $(this).find('a').text();
 	}).get();
 
-	showsDB.push(show);
+	var nextUrl = getNextUrl($);
 
-	var nextUrl = getNextUrl($)
-
-	if (nextUrl) {
-		parseNextShow(nextUrl, buildShow);
-	} 
+	return saveShow(show, setlist)
+	.then(function() {
+		if (nextUrl) {
+			return parseNextShow(nextUrl, buildShow);
+		} 
+	})
 }
 
-var formatDate = function(date) {
-	var months = {
-		'Jan': '01',
-		'Feb': '02',
-		'Mar': '03',
-		'Apr': '04',
-		'May': '05',
-		'Jun': '06',
-		'Jul': '07',
-		'Aug': '08',
-		'Sep': '09',
-		'Oct': '10',
-		'Nov': '11',
-		'Dec': '12' 
-	};
-
-	var month = date.substring(0,3);
-	date = date.substring(4);
-
-	var i = date.indexOf(',');
-	var day = date.substring(0, i);
-	date = date.substring(i+2);
-	if (day.length == 1) {
-		day = '0' + day;
-	}
-
-	date += '-' + months[month];
-	date += '-' + day;
-
-	return date;
+var saveShow = function(show, setlist) {
+	return Show.insert(show)
+	.then(function(id) {
+		return Setlist.insertList(setlist, id)
+	})
 }
 
 var getNextUrl = function($){

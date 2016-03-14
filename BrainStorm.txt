@@ -1,7 +1,8 @@
 TODO:
 
-[ ] test models
-[ ] write models 
+[x] test models
+[x] write models
+[ ] refactor scraper to not be a mess 
 [ ] test scraper
 [ ] refactor scraper to use DB
 [ ] comment out code so far

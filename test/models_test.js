@@ -139,7 +139,7 @@ describe('Setlists', function() {
 				rank: 1
 			}
 
-			return Setlist.insert(live_song)
+			return Setlist.insertSong(live_song)
 			.then(function(id) {
 				expect(typeof id).to.equal('number');
 			})
@@ -152,7 +152,7 @@ describe('Setlists', function() {
 				rank: 1
 			}
 
-			return Setlist.insert(live_song)
+			return Setlist.insertSong(live_song)
 			.then(function(id) {
 				expect(id).to.equal(undefined)
 			})
@@ -161,7 +161,7 @@ describe('Setlists', function() {
 
 				live_song.song_id = song1.id
 				live_song.show_id = 77
-				return Setlist.insert(live_song)
+				return Setlist.insertSong(live_song)
 			})
 			.then(function(id) {
 				expect(id).to.equal(undefined)
@@ -171,50 +171,8 @@ describe('Setlists', function() {
 			})
 		})
 
-		it('cannot add the same song to the same show twice', function() {
-			var live_song = {
-				song_id: song1.id,
-				show_id: show1.id,
-				rank: 1
-			}
-
-			return Setlist.insert(live_song)
-			.then(function() {
-				return Setlist.insert(live_song)
-			})
-			.then(function(id) {
-				expect(id).to.equal(undefined);
-			})
-			.catch(function(err) {
-				expect(err).to.equal(400);
-			})
-		})
-
-
-		it('cannot have two songs in the same rank for a single show', function() {
-			var live_song1 = {
-				song_id: song1.id,
-				show_id: show1.id,
-				rank: 1
-			}
-
-			var live_song2 = {
-				song_id: song2.id,
-				show_id: show1.id,
-				rank: 1
-			}
-
-			return Setlist.insert(live_song1)
-			.then(function() {
-				return Setlist.insert(live_song2)
-			})
-			.then(function(id) {
-				expect(id).to.equal(undefined);
-			})
-			.catch(function(err) {
-				expect(err).to.equal(400);
-			})
-
+		it('can insert a full setlist', function() {
+			return Setlist.insertList([song1.title, song2.title], show1.id)
 		})
 
 })
