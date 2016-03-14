@@ -70,7 +70,8 @@ describe('Shows', function() {
 		return db('live_songs').del()
 		.then(function() {
 			return db('shows').del();
-		})	})
+		})	
+	})
 
 	it('can add a show', function() {
 		return Show.insert(show1)

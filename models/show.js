@@ -22,7 +22,6 @@ Show.insert = function(show) {
 
 Show.mostRecent = function() {
 	return db('shows').select('id', 'date')
-	.where({date: 'Apr 2 2015'})
 	.then(function(rows) {
 		if (!rows.length) return;
 
@@ -35,8 +34,8 @@ Show.mostRecent = function() {
 		})
 
 		return db('shows').select('*').where({id: mostRecent.id})
+		.then(pluckFirst);
 	})
-	.then(pluckFirst);
 }
 
 var pluckFirst = function(rows) {

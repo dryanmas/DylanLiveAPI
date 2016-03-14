@@ -1,39 +1,58 @@
 var axios = require('axios');
 var cheerio = require('cheerio');
+var Promise = require('bluebird');
 
-var Song = require('../models/song.js');
 var Show = require('../models/show.js');
 var Setlist = require('../models/setlist.js');
 
-var getShows = function() {
-	return startUrl()
-	.then(function(url) {
-		return parseNextShow(url, buildShow)
+var ShowScraper = function() {
+	return getStartUrl()
+	.then(function(url){
+		console.log('start url', url)
+		if (!url) return;
+
+		return parseShow(url, []);
+	})
+	.then(function(shows) {
+		return Promise.all(shows.map(saveShow)); 
 	})
 }
 
-var startUrl = function() {
+//finds the url of the first show that is missing from the DB
+var getStartUrl = function() {
 	var firstShow = "http://bobdylan.com/date/1960-05-01-home-karen-wallace/";
 	
-	return Song.mostRecent()
+	return Show.mostRecent()
 	.then(function(show) {
 		if (!show) return firstShow;
-
-		return parseNextShow(show.url, function(html) {
-			var $ = cheerio.load(html);
-
-			return getNextUrl($);
+		console.log('most recent show!', show.url)
+		return axios.get(show.url)
+		.then(function(resp) {
+			var $ = cheerio.load(resp.data);
+			return $('.next').find('a').prop('href');
 		})
 	})
 }
 
-var parseNextShow = function(url, callback) {
-	return axios.get(url)
-	.then(function(response){
-		return callback(response.data, url);
-	})
-}
+//gets the show HTML and builds the show object 
+//repeats the same routine on the next show
+var parseShow = Promise.coroutine(function *(url, shows) {
+	var i = 0;
 
+	while (url && i++ < 20){
+	 	console.log(url);
+		var resp = yield axios.get(url);
+		var show = buildShow(resp.data, url);
+		
+		url = show.nextUrl;
+		delete show.nextUrl;
+
+		shows.push(show);
+	}
+	return shows;
+});
+
+//pulls all the information for a show
 var buildShow = function(html, url) {
 	var $ = cheerio.load(html);
 
@@ -44,30 +63,24 @@ var buildShow = function(html, url) {
 	show.location = $('.details').find('.headline').text();
 	show.venue = $('.details').find('.venue').find('a').text();
 	
-	var setlist = $('.set-list').find('li').map(function(){
+	show.setlist = $('.set-list').find('li').map(function(){
 		return $(this).find('a').text();
 	}).get();
 
-	var nextUrl = getNextUrl($);
+	show.nextUrl = $('.next').find('a').prop('href');
 
-	return saveShow(show, setlist)
-	.then(function() {
-		if (nextUrl) {
-			return parseNextShow(nextUrl, buildShow);
-		} 
-	})
+	return show;
 }
 
-var saveShow = function(show, setlist) {
+//Saves a show and its setlist into the DB
+var saveShow = function(show) {
+	var setlist = show.setlist;
+	delete show.setlist;
+
 	return Show.insert(show)
 	.then(function(id) {
 		return Setlist.insertList(setlist, id)
 	})
 }
 
-var getNextUrl = function($){
-	return $('.next').find('a').prop('href')
-}
-
-
-module.exports = getShows;
+module.exports = ShowScraper;
