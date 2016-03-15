@@ -12,12 +12,14 @@ Setlist.insertSong = function(liveSong) {
 
 Setlist.insertList = function(arr, show_id) {
 	return Promise.all(arr.map(function(title, i) {
+		console.log('title!', title);
 		return db('songs').select('id').where({title: title})
 		.then(function(rows) {
+			console.log('id', rows);
 			var liveSong = {
 				song_id: rows[0].id,
 				show_id: show_id,
-				rank: i
+				rank: i+1
 			}
 
 			return Setlist.insertSong(liveSong)

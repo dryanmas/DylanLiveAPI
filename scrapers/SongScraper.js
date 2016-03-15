@@ -11,10 +11,15 @@ var SongScraper = function(){
 		return parseAllSongs(resp.data);
 	})
 	.then(function(songs) {
-		return Promise.all(songs.map(getSong));
+		var mapped = songs.map(getSong);
+		console.log('checkity');
+		return Promise.all(mapped);
 	})
 	.then(function(songs) {
 		return Promise.all(songs.map(Song.insert))
+	})
+	.then(function() {
+		console.log('donesies');
 	})
 }
 
@@ -26,7 +31,7 @@ var parseAllSongs = function(html) {
 	var allSongs = $('.line_detail').map(function(i, el){
 		return buildSong($, el);
 	}).get();
-	
+
 	return Promise.all(allSongs.map(isNew))
 	.then(function(newSongs) {
 		return allSongs.filter(function(song, i) {
@@ -57,11 +62,11 @@ var isNew = function(song){
 
 //gets HTML for an individual song
 //and parses for lyric data 
-var getSong = function(song, i, songs) {
+var getSong = function(song) {
 	return axios.get(song.url)
 	.then(function(resp) {
-		parseSong(song, resp.data);
-		return songs;
+		song = parseSong(song, resp.data);
+		return song;
 	})
 }
 
@@ -70,7 +75,9 @@ var parseSong = function(song, html){
 	$ = cheerio.load(html);
 
 	song.credit = $('.credit').text().substring(16);
-	song.lyrics = parseLyrics($('.lyrics').text()); 
+	song.lyrics = parseLyrics($('.lyrics').text());
+
+	return song; 
 }
 
 //removes unnecessary text from the lyrics 
