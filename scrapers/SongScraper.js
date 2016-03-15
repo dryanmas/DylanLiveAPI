@@ -12,7 +12,6 @@ var SongScraper = function(){
 	})
 	.then(function(songs) {
 		var mapped = songs.map(getSong);
-		console.log('checkity');
 		return Promise.all(mapped);
 	})
 	.then(function(songs) {

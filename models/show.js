@@ -1,6 +1,16 @@
 var db = require('../db');
+var Setlist = require('./setlist');
 var Show = {};
 
+
+Show.all = function() {
+	return db('shows').select('*')
+	.then(function(shows) {
+		return Promise.all(shows.map(function(show) {
+			return Setlist.findByShow(show.id);
+		}))
+	})
+}
 
 Show.findByDate = function(date) {
 	return findBy('date', date);
@@ -35,6 +45,14 @@ Show.mostRecent = function() {
 
 		return db('shows').select('*').where({id: mostRecent.id})
 		.then(pluckFirst);
+	})
+}
+
+Show.allBySong = function(songId) {
+	return db('shows').select('*')
+	.whereIn('id', function() {
+		db('live_songs').select('show_id')
+		.where({song_id: songId})
 	})
 }
 

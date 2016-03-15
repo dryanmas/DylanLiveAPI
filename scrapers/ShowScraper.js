@@ -16,6 +16,9 @@ var ShowScraper = function() {
 	.then(function(shows) {
 		return Promise.all(shows.map(saveShow)); 
 	})
+	.then(function() {
+		console.log('donesies');
+	})
 }
 
 //finds the url of the first show that is missing from the DB
@@ -39,8 +42,7 @@ var getStartUrl = function() {
 var parseShow = Promise.coroutine(function *(url, shows) {
 	var i = 0;
 
-	while (url && i++ < 20){
-	 	console.log(url);
+	while (url && i++ < 300) {
 		var resp = yield axios.get(url);
 		var show = buildShow(resp.data, url);
 		

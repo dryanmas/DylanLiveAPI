@@ -61,7 +61,21 @@ describe('Songs', function() {
 		.catch(function(err) {
 			expect(err).to.equal(400);
 		})
+	})
 
+	it('can retrieve all songs', function() {
+		return Song.insert(song1)
+		.then(function() {
+			return Song.insert(song2);
+		})
+		.then(function() {
+			return Song.all();
+		})
+		.then(function(songs) {
+			expect(songs.length).to.equal(2);
+			expect(songs[0].title).to.equal(song1.title);
+			expect(songs[1].title).to.equal(song2.title);
+		})
 	})
 })
 
@@ -92,6 +106,16 @@ describe('Shows', function() {
 			expect(err).to.equal(400);
 		})
 
+		it('can get all shows', function() {
+			return Show.insert(show1)
+			.then(function() {
+				return Show.insert(show2);
+			})
+			.then(function(id) {
+				Setlist.insertList([song1.title, song2.title], id)
+			})
+		})
+
 	})
 
 	it('can find the most recent show', function() {
@@ -115,21 +139,25 @@ describe('Setlists', function() {
 				return db('shows').del()
 			})
 			.then(function() {
-				return db('songs').del()
+				return db('songs').del();
 			})
 			.then(function() {
-				return Song.insert(song1)
+				return Song.insert(song1);
 			})
 			.then(function(id) {
 				song1.id = id;
-				return Song.insert(song2)
+				return Song.insert(song2);
 			})
 			.then(function(id) {
 				song2.id = id;
-				return Show.insert(show1)
+				return Show.insert(show1);
 			})
 			.then(function(id) {
 				show1.id = id;
+				return Show.insert(show2);
+			})
+			.then(function(id) {
+				show2.id = id;
 			})
 		})
 
@@ -175,5 +203,39 @@ describe('Setlists', function() {
 		it('can insert a full setlist', function() {
 			return Setlist.insertList([song1.title, song2.title], show1.id)
 		})
+
+		it('can retrieve a setlist', function() {
+			return Setlist.insertList([song1.title, song2.title], show1.id)
+			.then(function() {
+				return Setlist.insertList([song2.title, song1.title], show2.id);
+			})
+			.then(function() {
+				return Setlist.findByShow(show1.id)
+			})
+			.then(function(setlist) {
+				expect(setlist.length).to.equal(2);
+				expect(setlist[0].title).to.equal(song1.title);
+				expect(setlist[1].title).to.equal(song2.title);
+			})
+		})
+
+	it('can retrieve songs with play counts', function() {
+		return Setlist.insertList([song1.title, song2.title], show1.id)
+		.then(function() {
+			return Setlist.insertList([song2.title], show2.id);
+		})
+		.then(function() {
+			return Song.count(song2.id) 
+		})
+		.then(function(count) {
+			expect(count).to.equal(2);
+			return Song.allByCount()
+		})
+		.then(function(songs) {
+			expect(songs.length).to.equal(2);
+			expect(songs[0].title).to.equal(song2.title);
+			expect(songs[1].title).to.equal(song1.title);			
+		})
+	})
 
 })

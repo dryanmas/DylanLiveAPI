@@ -1,5 +1,36 @@
 var db = require('../db');
+var Promise = require('bluebird');
 var Song = {};
+
+Song.all = function() {
+	return db('songs').select('*');
+}
+
+Song.allByCount = function() {
+	return Song.all()
+	.then(function(songs) {
+		return Promise.all(songs.map(function(song) {
+			return Song.count(song.id)
+			.then(function(count) {
+				song.count = count;
+				return song; 
+			})
+		}))
+	})
+	.then(function(songs) {
+		return songs.sort(function(x, y) {
+			return y.count - x.count;
+		})
+	})
+}
+
+Song.count = function(id) {
+	return db('live_songs').count('*')
+	.where({song_id: id})
+	.then(function(rows){
+		return parseInt(rows[0].count); 
+	}) 
+}
 
 Song.findByTitle = function(title) {
 	return findBy('title', title);
