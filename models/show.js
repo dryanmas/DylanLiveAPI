@@ -30,6 +30,7 @@ Show.insert = function(show) {
 	.then(pluckFirst);
 }
 
+//TODO update this!!!
 Show.mostRecent = function() {
 	return db('shows').select('id', 'date')
 	.then(function(rows) {

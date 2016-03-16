@@ -1,16 +1,16 @@
 var db = require('../db');
 var Promise = require('bluebird');
+var count = require('./helpers/count');
+
 var Song = {};
 
+//finds all songs, sorted by count
+//TODO: sort alphebatically? 
 Song.all = function() {
-	return db('songs').select('*');
-}
-
-Song.allByCount = function() {
 	return Song.all()
 	.then(function(songs) {
 		return Promise.all(songs.map(function(song) {
-			return Song.count(song.id)
+			return count.all(song.id)
 			.then(function(count) {
 				song.count = count;
 				return song; 
@@ -22,14 +22,6 @@ Song.allByCount = function() {
 			return y.count - x.count;
 		})
 	})
-}
-
-Song.count = function(id) {
-	return db('live_songs').count('*')
-	.where({song_id: id})
-	.then(function(rows){
-		return parseInt(rows[0].count); 
-	}) 
 }
 
 Song.findByTitle = function(title) {

@@ -51,14 +51,14 @@ describe('Songs', function() {
 		})
 	})
 
-	it('can add songs', function() {
+	xit('can add songs', function() {
 		return Song.insert(song1)
 		.then(function(id) {
 			expect(typeof id).to.equal('number');
 		})
 	})
 
-	it('cannot add a song twice', function() {
+	xit('cannot add a song twice', function() {
 		return Song.insert(song1)
 		.then(function() {
 			return Song.insert(song1);
@@ -71,7 +71,7 @@ describe('Songs', function() {
 		})
 	})
 
-	it('can retrieve all songs', function() {
+	xit('can retrieve all songs', function() {
 		return Song.insert(song1)
 		.then(function() {
 			return Song.insert(song2);
@@ -95,14 +95,14 @@ describe('Shows', function() {
 		})	
 	})
 
-	it('can add a show', function() {
+	xit('can add a show', function() {
 		return Show.insert(show1)
 		.then(function(id) {
 			expect(typeof id).to.equal('number');
 		})
 	})
 
-	it('cannot add a show twice', function() {
+	xit('cannot add a show twice', function() {
 		return Show.insert(show1)
 		.then(function() {
 			return Show.insert(show1)
@@ -114,7 +114,7 @@ describe('Shows', function() {
 			expect(err).to.equal(400);
 		})
 
-		it('can get all shows', function() {
+		xit('can get all shows', function() {
 			return Show.insert(show1)
 			.then(function() {
 				return Show.insert(show2);
@@ -126,7 +126,7 @@ describe('Shows', function() {
 
 	})
 
-	it('can find the most recent show', function() {
+	xit('can find the most recent show', function() {
 		return Show.insert(show1)
 		.then(function() {
 			return Show.insert(show2);
@@ -169,7 +169,7 @@ describe('Setlists', function() {
 			})
 		})
 
-		it('can add a song', function() {
+		xit('can add a song', function() {
 			var live_song = {
 				song_id: song1.id,
 				show_id: show1.id,
@@ -182,7 +182,7 @@ describe('Setlists', function() {
 			})
 		})
 
-		it('must have valid show and song ids', function() {
+		xit('must have valid show and song ids', function() {
 			var live_song = {
 				song_id: 6.5,
 				show_id: show1.id,
@@ -208,11 +208,11 @@ describe('Setlists', function() {
 			})
 		})
 
-		it('can insert a full setlist', function() {
+		xit('can insert a full setlist', function() {
 			return Setlist.insertList([song1.title, song2.title], show1.id)
 		})
 
-		it('can retrieve a setlist', function() {
+		xit('can retrieve a setlist', function() {
 			return Setlist.insertList([song1.title, song2.title], show1.id)
 			.then(function() {
 				return Setlist.insertList([song2.title, song1.title], show2.id);
@@ -227,7 +227,7 @@ describe('Setlists', function() {
 			})
 		})
 
-	it('can retrieve songs with play counts', function() {
+	xit('can retrieve songs with play counts', function() {
 		return Setlist.insertList([song1.title, song2.title], show1.id)
 		.then(function() {
 			return Setlist.insertList([song2.title], show2.id);

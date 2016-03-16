@@ -10,13 +10,13 @@ Setlist.insertSong = function(liveSong) {
 	})
 }
 
-Setlist.insertList = function(arr, show_id) {
-	return Promise.all(arr.map(function(title, i) {
+Setlist.insertList = function(titles, showId) {
+	return Promise.all(titles.map(function(title, i) {
 		return db('songs').select('id').where({title: title})
 		.then(function(rows) {
 			var liveSong = {
 				song_id: rows[0].id,
-				show_id: show_id,
+				show_id: showId,
 				rank: i
 			}
 
