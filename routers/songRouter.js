@@ -1,5 +1,10 @@
 var router = require('express').Router();
+var dateRouter = require('./songByDateRouter');
+var locationRouter = require('./songByLocationRouter');
 var Song = require('../models/song');
+
+router.use('/byDate', dateRouter);
+router.use('/byLocation', locationRouter);
 
 //get all songs
 router.get('/', function(req, res) {
@@ -12,5 +17,14 @@ router.get('/', function(req, res) {
 		res.sendStatus(400);
 	})
 })
+
+router.get('/byAlbum', function(req, res) {
+
+})
+
+router.get('/byVenue', function(req, res) {
+	
+})
+
 
 module.exports = router;

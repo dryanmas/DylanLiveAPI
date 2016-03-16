@@ -1,10 +1,15 @@
 var router = require('express').Router();
 var Promise = require('bluebird');
+var dateRouter = require('./showByDateRouter');
+var locationRouter = require('./showByLocationRouter');
 
 var Show = require('../models/show');
 var Setlist = require('../models/setlist');
 
-router.get('/', function(res, resp) {
+router.use('/byDate', dateRouter);
+router.use('/byLocation', locationRouter);
+
+router.get('/', function(req, res) {
 	Show.all()
 	.then(function(shows) {
 
@@ -17,6 +22,10 @@ router.get('/', function(res, resp) {
 			})
 		})
 	})
+})
+
+router.get('byVenue', function(req, res) {
+
 })
 
 module.exports = router;
