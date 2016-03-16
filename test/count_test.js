@@ -1,13 +1,10 @@
 var db = require('../db');
 var count = require('../models/helpers/count');
-var helpers = require('../models/helpers/songHelpers');
-var Setlist = require('../models/setlist');
 
 var songs = require('./data').songs;
 var shows = require('./data').shows;
-var setlists = require('./data').setlists;
+var populateDB = require('./data').populateDB;
 
-var Promise = require('bluebird');
 var expect = require('chai').expect;
 
 var getTimestamp = function(date) {
@@ -16,43 +13,7 @@ var getTimestamp = function(date) {
 
 describe('Count', function() {
 	//This clusterfuck populates the database
-	beforeEach(function() {
-		songs.forEach(function(song) {
-			delete song.id;
-		})
-		shows.forEach(function(show) {
-			delete show.id;
-		})
-
-		return db('live_songs').del()
-		.then(function() {
-			return db('shows').del()
-		})
-		.then(function() {
-			return db('songs').del();
-		})
-		.then(function() {
-			return db('songs').insert(songs).returning('id')
-			.then(function(ids) {
-				songs.forEach(function(song, i) {
-					song.id = ids[i];
-				})
-			})
-		})
-		.then(function() {
-			return db('shows').insert(shows).returning('id')
-			.then(function(ids) {
-				shows.forEach(function(show, i) {
-					show.id = ids[i];
-				})
-			})
-		})
-		.then(function() {
-			return Promise.all(setlists.map(function(setlist, i) {
-				return Setlist.insertList(setlist, shows[i].id);
-			}))
-		})
-	});
+	beforeEach(populateDB);
 
 	it('all', function() {
 		return count.all(songs[0].id)
@@ -175,5 +136,4 @@ describe('Count', function() {
 		})
 
 	})
-
 })

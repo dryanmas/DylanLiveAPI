@@ -1,3 +1,7 @@
+var db = require('../db');
+var Setlist = require('../models/setlist');
+var Promise = require('bluebird');
+
 var songs = [ 
 	{	
 		title: "song1",
@@ -113,7 +117,6 @@ var shows = [
 	}
 ]
 
-
 var setlists = [
 	[songs[0].title, songs[1].title],
 	[songs[0].title, songs[1].title, songs[4].title],
@@ -124,8 +127,49 @@ var setlists = [
 	songs.map(function(song) {return song.title})
 ]
 
+//clears and populates database
+var populateDB = function() {
+	songs.forEach(function(song) {
+		delete song.id;
+	});
+
+	shows.forEach(function(show) {
+		delete show.id;
+	});
+
+	return db('live_songs').del()
+	.then(function() {
+		return db('shows').del()
+	})
+	.then(function() {
+		return db('songs').del();
+	})
+	.then(function() {
+		return db('songs').insert(songs).returning('id')
+		.then(function(ids) {
+			songs.forEach(function(song, i) {
+				song.id = ids[i];
+			})
+		})
+	})
+	.then(function() {
+		return db('shows').insert(shows).returning('id')
+		.then(function(ids) {
+			shows.forEach(function(show, i) {
+				show.id = ids[i];
+			})
+		})
+	})
+	.then(function() {
+		return Promise.all(setlists.map(function(setlist, i) {
+			return Setlist.insertList(setlist, shows[i].id);
+		}))
+	})
+}
+
 module.exports = {
 	songs: songs,
 	shows: shows,
-	setlists: setlists
+	setlists: setlists,
+	populateDB: populateDB
 }
