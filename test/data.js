@@ -90,7 +90,7 @@ var shows = [
 		city: 'Tukluck',
 		state: 'Tennessee',
 		country: 'United States',
-		venue: 'another venue'
+		venue: 'Another venue'
 	},
 	{
 		date: getTimestamp('Jun 30 1977'),

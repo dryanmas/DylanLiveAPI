@@ -35,7 +35,7 @@ describe('Helpers', function() {
 		})
 	})
 
-	it('should get all country', function() {
+	it('should get all countries', function() {
 		return helpers.countries()
 		.then(function(countries) {
 			expect(countries.length).to.equal(2);
@@ -55,7 +55,7 @@ describe('Helpers', function() {
 		return helpers.venues()
 		.then(function(venues) {
 			expect(venues.length).to.equal(6)
-			expect(venues[0]).to.equal('another venue');
+			expect(venues[0]).to.equal('Another venue');
 		})
 	})
 })

@@ -13,7 +13,7 @@ var byDate = function(idCheck, start, end) {
 	.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
  	.where(idCheck)
  	.andWhere('date', '>=', start)
- 	.andWhere('date', '<=', end)
+ 	.andWhere('date', '<', end)
 	.then(parse)
 }
 
