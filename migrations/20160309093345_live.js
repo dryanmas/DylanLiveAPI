@@ -12,9 +12,11 @@ exports.up = function(knex, Promise) {
 
   	knex.schema.createTable('shows', function(show) {
   		show.increments('id').primary();
-  		show.string('date').notNullable();
+  		show.integer('date').notNullable();
   		show.string('url').notNullable();
-  		show.string('location');
+      show.string('city')
+      show.string('country')
+  		show.string('state');
   		show.string('venue');
   	}),
 

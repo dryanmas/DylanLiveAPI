@@ -21,17 +21,25 @@ var song2 = {
 	lyrics: ""
 }
 
+var getTimestamp = function(date) {
+	return Math.floor(new Date(date).getTime()/1000);
+}
+
 var show1 = {
-	date: 'Apr 2 2015',
+	date: getTimestamp('Apr 2 2015'),
 	url: 'bobdylan.com/showshowshow',
-	location: 'Tukluck, TN',
+	city: 'Tukluck',
+	state: 'Tennessee',
+	country: 'United States',
 	venue: 'Some venue'
 }
 
 var show2 = {
-	date: 'Sep 8 2009',
+	date: getTimestamp('Sep 8 2009'),
 	url: 'bobdylan.com/blahblah',
-	location: 'Clearfield, UT',
+	city: 'Clearfield',
+	state: 'Utah',
+	country: 'United States', 
 	venue: 'House show'
 }
 

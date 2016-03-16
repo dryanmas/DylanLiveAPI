@@ -1,6 +1,7 @@
 var axios = require('axios');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
+var stateLookup = require('./stateLookup');
 
 var Show = require('../models/show.js');
 var Setlist = require('../models/setlist.js');
@@ -42,8 +43,9 @@ var getStartUrl = function() {
 var parseShow = Promise.coroutine(function *(url, shows) {
 	var i = 0;
 
-	while (url && i++ < 300) {
-		var resp = yield axios.get(url);
+	while (url && i++ < 200) {
+		console.log(url);
+ 		var resp = yield axios.get(url);
 		var show = buildShow(resp.data, url);
 		
 		url = show.nextUrl;
@@ -60,9 +62,22 @@ var buildShow = function(html, url) {
 
 	var show = {};
 
+	var date = $('.details').find('.date').text();
+	var location = ($('.details').find('.headline').text());
+	location = parseLocation(location);
+
 	show.url = url;
-	show.date = $('.details').find('.date').text();
-	show.location = $('.details').find('.headline').text();
+	show.date = getTimestamp(date);
+	
+	if (location) {
+		show.city = location.city;
+		show.country = location.country;
+
+		if (location.state) {
+			show.state = location.state;
+		}
+	}
+
 	show.venue = $('.details').find('.venue').find('a').text();
 	
 	show.setlist = $('.set-list').find('li').map(function(){
@@ -72,6 +87,38 @@ var buildShow = function(html, url) {
 	show.nextUrl = $('.next').find('a').prop('href');
 
 	return show;
+}
+
+var getTimestamp = function(date) {
+	return Math.floor(new Date(date).getTime()/1000);
+}
+
+var parseLocation = function(location) {
+	var parsed = {}
+	console.log('location', location);
+	
+	if (!location) return null;
+	
+	//handles unfortunate anomalies in source site 
+	if (stateLookup.anomalies[location]) {
+		location = stateLookup.anomalies[location];
+	}
+
+	location = location.split(',');
+	var stateOrCountry = location[1].substring(1);
+	parsed.city = location[0];
+
+	if (stateLookup.US[stateOrCountry]) {
+		parsed.state = stateLookup.US[stateOrCountry];
+		parsed.country = 'United States';
+	} else if (stateLookup.CA[stateOrCountry]) {
+		parsed.country = 'Canada';
+	} else {
+		parsed.country = stateOrCountry;
+	}
+	console.log('location', parsed);
+
+	return parsed
 }
 
 //Saves a show and its setlist into the DB
