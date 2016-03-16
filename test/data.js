@@ -101,7 +101,7 @@ var shows = [
 	},
 	{
 		date: getTimestamp('Oct 2 2015'),
-		url: '',
+		url: 'bobdylan.com/asdf',
 		city: 'Salt Lake City',
 		state: 'Utah',
 		country: 'United States', 
@@ -161,8 +161,8 @@ var populateDB = function() {
 		})
 	})
 	.then(function() {
-		return Promise.all(setlists.map(function(setlist, i) {
-			return Setlist.insertList(setlist, shows[i].id);
+		return Setlist.insertAll(setlists, shows.map(function(show) {
+			return show.id;
 		}))
 	})
 }

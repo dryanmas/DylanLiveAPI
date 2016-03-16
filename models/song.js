@@ -6,23 +6,23 @@ var Song = {};
 
 //finds all songs, sorted by count
 //TODO: sort alphebatically? 
-Song.all = function() {
-	return Song.all()
-	.then(function(songs) {
-		return Promise.all(songs.map(function(song) {
-			return count.all(song.id)
-			.then(function(count) {
-				song.count = count;
-				return song; 
-			})
-		}))
-	})
-	.then(function(songs) {
-		return songs.sort(function(x, y) {
-			return y.count - x.count;
-		})
-	})
-}
+// Song.all = function() {
+// 	return Song.all()
+// 	.then(function(songs) {
+// 		return Promise.all(songs.map(function(song) {
+// 			return count.all(song.id)
+// 			.then(function(count) {
+// 				song.count = count;
+// 				return song; 
+// 			})
+// 		}))
+// 	})
+// 	.then(function(songs) {
+// 		return songs.sort(function(x, y) {
+// 			return y.count - x.count;
+// 		})
+// 	})
+// }
 
 Song.findByTitle = function(title) {
 	return findBy('title', title);
@@ -32,14 +32,17 @@ Song.findByUrl = function(url) {
 	return findBy('url', url);
 }
 
-Song.insert = function(song) {
-	return Song.findByUrl(song.url)
-	.then(function(exists) {
-		if (exists) throw 400;
-		
-		return db('songs').insert(song).returning('id'); 
+Song.insert = function(songs) {
+	return Promise.all(songs.map(function(song) {
+		return Song.findByTitle(song.title)
+		.then(function(exists) {
+			if (exists) throw "Duplicate Song!";
+			return song;
+		})
+	}))
+	.then(function(songs) {		
+		return db('songs').insert(songs).returning('id'); 
 	})
-	.then(pluckFirst)
 }
 
 var pluckFirst = function(rows) {

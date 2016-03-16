@@ -2,16 +2,16 @@ var db = require('../../db');
 var Promise = require('bluebird');
 var count = require('./count');
 
-var helpers = {};
+var collections = {};
 
 //TODO: promisify the first two to make them consistent?
 
 //TODO: fix this so its not hard coded
-helpers.decades = function() {
+collections.decades = function() {
 	return ['60s', '70s', '80s', '90s', '00s', '10s'];
 }
 
-helpers.years = function() {
+collections.years = function() {
 	var years = [];
 	for (var year = 1960; year <= (new Date).getFullYear(); year++) {
 		years.push(year)
@@ -19,7 +19,7 @@ helpers.years = function() {
 	return years;
 }
 
-helpers.months = Promise.coroutine(function *() {
+collections.months = Promise.coroutine(function *() {
 	var months = [];
 	for (var year = 1960; year <= (new Date).getFullYear(); year++) {
 		for (var month = 0; month < 12; month++ ) {
@@ -59,11 +59,11 @@ var getAll = function(type, table) {
 	}
 }
 
-helpers.states = getAll('state', 'shows');
-helpers.countries = getAll('country', 'shows');
-helpers.albums = getAll('release', 'songs');
+collections.states = getAll('state', 'shows');
+collections.countries = getAll('country', 'shows');
+collections.albums = getAll('release', 'songs');
 
-helpers.venues = function() {
+collections.venues = function() {
 	return db('shows').select('venue')
 	.whereNotNull('venue')
 	.distinct('venue', 'city')
@@ -71,7 +71,7 @@ helpers.venues = function() {
 	.then(rowMap)
 }
 
-helpers.cities = function() {
+collections.cities = function() {
 	return db('shows').select('city')
 	.whereNotNull('city')
 	.distinct('city', 'state', 'country')
@@ -79,4 +79,4 @@ helpers.cities = function() {
 	.then(rowMap)
 }
 
-module.exports = helpers;
+module.exports = collections;

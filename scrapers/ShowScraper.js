@@ -14,9 +14,7 @@ var ShowScraper = function() {
 
 		return parseShow(url, []);
 	})
-	.then(function(shows) {
-		return Promise.all(shows.map(saveShow)); 
-	})
+	.then(saveShow)
 	.then(function() {
 		console.log('donesies');
 	})
@@ -122,14 +120,14 @@ var parseLocation = function(location) {
 }
 
 //Saves a show and its setlist into the DB
-var saveShow = function(show) {
-	var setlist = show.setlist;
-	delete show.setlist;
-
-	return Show.insert(show)
-	.then(function(id) {
-		return Setlist.insertList(setlist, id)
+var saveShows = function(shows) {
+	var setlists = shows.map(function(show) {
+		var setlist = show.setlist;
+		delete show.setlist;
+		return setlist;
 	})
+
+	return Show.insert(shows, setlists)
 }
 
 module.exports = ShowScraper;
