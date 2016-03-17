@@ -15,7 +15,8 @@ var SongScraper = function(){
 		return Promise.all(mapped);
 	})
 	.then(function(songs) {
-		return Promise.all(songs.map(Song.insert))
+		console.log('about to insert')
+		return Song.insert(songs);
 	})
 	.then(function() {
 		console.log('donesies');

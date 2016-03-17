@@ -1,10 +1,27 @@
 var router = require('express').Router();
+var getData = require('../dataBuilders/dateBuilder').song;
 
-router.get('/year', function(req, res) {
+//TODO: MORE MODULARIZED!!!!
 
+router.get('/decade', function(req, res) {
+	getData('decade')
+	.then(function(data) {
+		res.status(200).send(data);
+	})
 })
 
+router.get('/year', Promise.coutine(function *(req, res) {
+	getData('year')
+	.then(function(data) {
+		res.status(200).send(data);
+	})
+}))
+
 router.get('/month', function(req, res) {
+	getData('month')
+	.then(function(data) {
+		res.status(200).send(data);
+	})
 
 })
 

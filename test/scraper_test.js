@@ -49,11 +49,11 @@ describe('Scraper', function() {
 	it('can find a song by title', function() {
 		return Song.insert(songs)
 		.then(function() {
-			return Song.findByTitle('song1');
+			return Song.byTitle('song1');
 		})
 		.then(function(song) {
 			expect(song.title).to.equal('song1');
-			return Song.findByTitle('song88');
+			return Song.byTitle('song88');
 		})	
 		.then(function(song) {
 			expect(song).to.equal(undefined);

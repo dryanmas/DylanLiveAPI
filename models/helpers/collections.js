@@ -4,13 +4,19 @@ var count = require('./count');
 
 var collections = {};
 
+//TODO: might need to make the first two promises... 
+//we'll see how yield works  
+
 /**
 	returns an array of the decades in which Dylan has been active
 	heads up: not a promise
-	TODO: fix this so its not hard coded
 **/
 collections.decades = function() {
-	return ['60s', '70s', '80s', '90s', '00s', '10s'];
+	var decades = [];
+	for (var year = 1960; year <= (new Date).getFullYear(); year+=10) {
+		years.push(year);
+	}
+	return years;
 }
 
 /**

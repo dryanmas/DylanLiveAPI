@@ -12,4 +12,8 @@ router.get('/country', function(req, res) {
 
 })
 
+router.get('/venue', function(req, res) {
+	
+})
+
 module.exports = router;

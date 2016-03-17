@@ -32,9 +32,25 @@ Show.mostRecent = function() {
 }
 
 /**
+	returns all shows within a date range
+	start inclusive, end exclusive and optional
+	expects start and end to be timestamps
+
+	TODO: all setlist!
+**/
+Show.byDate = function(start, end) {
+	end = end || Math.floor((Date.now()/1000)) + 1000000;
+
+	return db('shows').select('*')
+	.andWhere('date', '>=', start)
+ 	.andWhere('date', '<', end)
+ 	.orderBy('date')
+}
+
+/**
 	finds a show based on url
 **/
-Show.findByUrl = function(url) {
+Show.byUrl = function(url) {
 	return helpers.find(url, 'url', 'shows');
 }
 
@@ -42,7 +58,7 @@ Show.findByUrl = function(url) {
 	checks that a show is not already in the DB
 **/
 Show.checkUnique = function(show) {
-	return Show.findByUrl(show.url)
+	return Show.byUrl(show.url)
 	.then(function(exists) {
 		if (exists) throw 'Duplicate show!';
 	})
