@@ -1,6 +1,6 @@
 var Song = require('../models/song');
 var Show = require('../models/show');
-var collections = require('../helpers/collections');
+var collections = require('../helpers/collection');
 var count = require('../helpers/count');
 
 

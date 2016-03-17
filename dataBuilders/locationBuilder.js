@@ -10,10 +10,10 @@ var dateBuilder = Promise.coroutine(function *(locationType, dataType) {
   var arr = yield location.collection();
   arr = arr.map(function(item) {
     return {
-      unit: function(){
+      value: function(){
         return item;
       },
-      key: function() {
+      toString: function() {
         return location.toString(item); 
       }
     }
@@ -22,11 +22,11 @@ var dateBuilder = Promise.coroutine(function *(locationType, dataType) {
   //dependant on if we working with shows or songs
   var methods = location.dataType[dataType];
 
-  var genArr = methods.genArr;
-  var total = methods.total;
-  var innerTotal = methods.innerTotal;
+  var buildArr = methods.buildArr;
+  var countOne = methods.countOne;
+  var countTotal = methods.countTotal;
 
-  return builder(arr, genArr, total, innerTotal)
+  return builder(arr, buildArr, countOne, countTotal)
 })
 
 module.exports = {

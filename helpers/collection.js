@@ -2,13 +2,14 @@ var db = require('../db');
 var Promise = require('bluebird');
 var Count = require('./count');
 
-var collections = {};
+/** ALL DATE BASED COLLECTIONS **/
 
+var date = {};
 /**
 	returns an array of the decades in which Dylan has been active
 	heads up: not a promise
 **/
-collections.decades = function() {
+date.decade = function() {
 	return new Promise(function(resolve) {
 		var decades = [];
 		for (var year = 1960; year <= (new Date).getFullYear(); year+=10) {
@@ -22,7 +23,7 @@ collections.decades = function() {
 	returns an array of the years in which Dylan has been active
 	heads up: not a promise
 **/
-collections.years = function() {
+date.year = function() {
 	return new Promise(function(resolve) {
 		var years = [];
 		for (var year = 1960; year <= (new Date).getFullYear(); year++) {
@@ -37,7 +38,7 @@ collections.years = function() {
 	the return array contains tuples of the form [month, year]
 	ex. [6, 1995] for June of 1995
 **/
-collections.months = Promise.coroutine(function *() {
+date.month = Promise.coroutine(function *() {
 	var months = [];
 	for (var year = 1960; year <= (new Date).getFullYear(); year++) {
 		for (var month = 0; month < 12; month++ ) {
@@ -61,19 +62,10 @@ collections.months = Promise.coroutine(function *() {
 	return months;
 })
 
-/**
-	maps an array of objects containing one key/value pair 
-	to an array of the values themselves
-**/
-var rowMap = function(rows) {
-	return rows.map(function(entry) {
-		return entry[Object.keys(entry)[0]];
-	})
-}
 
 /**
-	gets all of a column type from a table, getting rid of 
-	duplicate and null values and ordering by the column type
+	Helper: gets all of a column type from a table, getting rid 
+	of duplicate and null values and ordering by the column type
 **/
 var getAll = function(type, table) {
 	return function() {
@@ -81,30 +73,22 @@ var getAll = function(type, table) {
 		.whereNotNull(type)
 		.distinct(type)
 		.orderBy(type)
-		.then(rowMap)
+		.then(function(rows) {
+			return rows.map(function(entry) {
+				return entry[Object.keys(entry)[0]];
+			})
+		})
 	}
 }
 
-/**
-	gets all states in which Dylan has played
-**/
-collections.states = getAll('state', 'shows');
+/** ALL DATE BASED COLLECTIONS **/
 
-/**
-	gets all countries in which Dylan has played
-**/
-collections.countries = getAll('country', 'shows');
-
-/**
-	gets all albums off of which Dylan has played a song live
-**/
-collections.albums = getAll('release', 'songs');
-
+var location = {};
 /**
 	gets all venues in which Dylan has played
 	returns an array of tuples of the form [venue, city]
 **/
-collections.venues = function() {
+location.venue = function() {
 	return db('shows').select('venue', 'city')
 	.whereNotNull('venue')
 	.distinct('venue', 'city')
@@ -120,7 +104,7 @@ collections.venues = function() {
 	gets all cities in which Dylan has played
 	returns an array of arrays of the form [city, state, country]
 **/
-collections.cities = function() {
+location.city = function() {
 	return db('shows').select('city', 'state', 'country')
 	.whereNotNull('city')
 	.distinct('city', 'state', 'country')
@@ -132,4 +116,24 @@ collections.cities = function() {
 	})
 }
 
-module.exports = collections;
+/**
+	gets all states in which Dylan has played
+**/
+location.state = getAll('state', 'shows');
+
+/**
+	gets all countries in which Dylan has played
+**/
+location.country = getAll('country', 'shows');
+
+/**
+	gets all albums off of which Dylan has played a song live
+**/
+var album = getAll('release', 'songs');
+
+
+module.exports = {
+	date: date,
+	location: location,
+	album: album
+}

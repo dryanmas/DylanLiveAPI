@@ -1,14 +1,14 @@
 var Song = require('../models/song');
 var Show = require('../models/show');
 var Count = require('../helpers/count').date;
-var collections = require('../helpers/collections');
+var Collection = require('../helpers/collection').date;
 
 var timestamp = function(date){
 	return Math.floor(date.getTime()/1000);
 }
 
 var decade = {
-	collection: collections.decades,
+	collection: Collection.decade,
 	start: function(decade) {
 		return timestamp(new Date(decade, 0));
 	},
@@ -21,7 +21,7 @@ var decade = {
 }
 
 var year = {
-	collection: collections.years,
+	collection: Collection.year,
 	start: function(year) {
 		return timestamp(new Date(year, 0));
 	},
@@ -34,7 +34,7 @@ var year = {
 }
 
 var month = {
-	collection: collections.months,
+	collection: Collection.month,
 	start: function(pair) {
 		var month = pair[0];
 		var year = pair[1];
