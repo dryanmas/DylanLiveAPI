@@ -4,35 +4,31 @@ var count = require('./count');
 
 var collections = {};
 
-//TODO: fix the promisification of the first two 
-
 /**
 	returns an array of the decades in which Dylan has been active
 	heads up: not a promise
 **/
 collections.decades = function() {
-	//TODO: HACKY SHIT, refactor please
-	return count.all().then(function() {
+	return new Promise(function(resolve) {
 		var decades = [];
 		for (var year = 1960; year <= (new Date).getFullYear(); year+=10) {
 			decades.push(year);	
 		}
-		return decades;
-	})
-};
+		resolve(decades);
+	});
+}
 
 /**
 	returns an array of the years in which Dylan has been active
 	heads up: not a promise
 **/
 collections.years = function() {
-	//TODO: HACKY SHIT, refactor please
-	return count.all().then(function() {
+	return new Promise(function(resolve) {
 		var years = [];
 		for (var year = 1960; year <= (new Date).getFullYear(); year++) {
 			years.push(year)
 		}
-		return years;
+		resolve(years);
 	})
 }
 
