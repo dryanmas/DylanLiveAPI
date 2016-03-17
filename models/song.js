@@ -40,8 +40,9 @@ Song.byTitle = function(title) {
 	start inclusive, end exclusive and optional
 	expects start and end to be timestamps
 **/
-Song.byDate = function(start, end) {
-	end = end || Math.floor((Date.now()/1000)) + 1000000;
+Song.byDate = function(range) {
+	var start = range[0]
+	var end = range[1] || Math.floor((Date.now()/1000)) + 1000000;
 
 	return db.select('*').from('songs')
 	.whereIn('songs.id', function() {
@@ -52,6 +53,62 @@ Song.byDate = function(start, end) {
 	})
 	.orderBy('title')
 }
+
+/**
+	returns all songs by venue/city
+**/
+Song.byVenue = function(location) {
+	return db.select('*').from('songs')
+	.whereIn('songs.id', function() {
+		this.select('song_id').from('shows')
+		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
+		.where({venue: location[0]})
+		.andWhere({city: location[1]})
+	})
+	.orderBy('title')
+}
+
+/**
+	returns all songs by city/state/country
+**/
+Song.byCity = function(location) {
+	return db.select('*').from('songs')
+	.whereIn('songs.id', function() {
+		this.select('song_id').from('shows')
+		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
+		.where({city: location[0]})
+		.andWhere({state: location[1]})
+		.andWhere({country: location[2]})
+	})
+	.orderBy('title')
+}
+
+/**
+	returns all songs by state
+**/
+Song.byState = function(state) {
+	return db.select('*').from('songs')
+	.whereIn('songs.id', function() {
+		this.select('song_id').from('shows')
+		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
+		.where({state: state})
+	})
+	.orderBy('title')
+}
+
+/**
+	returns all songs by country
+**/
+Song.byCountry = function(country) {
+	return db.select('*').from('songs')
+	.whereIn('songs.id', function() {
+		this.select('song_id').from('shows')
+		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
+		.where({country: country})
+	})
+	.orderBy('title')
+}
+
 
 /**
 	inserts an array of songs, returning an array of ids

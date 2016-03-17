@@ -66,7 +66,7 @@ describe('Location Builder', function() {
     .then(function(data) {
       expect(Object.keys(data).length).to.equal(6);
       expect(data['USANA, Salt Lake City'].all.length).to.equal(7);
-      expect(data['House show, Meford'].total).to.equal(3);
+      expect(data['House show, Medford'].total).to.equal(3);
 
       return locationBuilder.show('venue');
     })
@@ -94,7 +94,7 @@ describe('Location Builder', function() {
     return locationBuilder.song('state')
     .then(function(data) {
       expect(Object.keys(data).length).to.equal(3);
-      expect(data['Utah'].all).to.equal(7);
+      expect(data['Utah'].all.length).to.equal(7);
 
       return locationBuilder.show('state')
     })

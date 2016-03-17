@@ -9,7 +9,7 @@ var buildUnit = Promise.coroutine(function *(unit, genArr, total) {
 	//song data
 	if (total) {
 		for (var i = 0; i < innerArr.length; i++) {
-			innerArr.count = yield total(innerArr[i]);
+			innerArr.count = yield total(innerArr[i].id, unit);
 		}
 	}
 

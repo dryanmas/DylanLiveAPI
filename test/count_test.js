@@ -32,13 +32,13 @@ describe('Count', function() {
 		var start = getTimestamp('Jan 1 1980');
 		var end = getTimestamp('Jan 1 2000');
 
-		return count.byDate(id, start, end)
+		return count.byDate(id, [start, end])
 		.then(function(amount) {
 			expect(amount).to.equal(1);
 
 			id = songs[1].id;
 			start = getTimestamp('Oct 2 1990')
-			return count.byDate(id, start);
+			return count.byDate(id, [start]);
 		})
 		.then(function(amount) {
 			expect(amount).to.equal(3);
@@ -47,21 +47,21 @@ describe('Count', function() {
 
 	it('all by date', function() {
 		var start = getTimestamp('Jun 2 1991');
-		return count.allByDate(start)
+		return count.allByDate([start])
 		.then(function(amount) {
 			expect(amount).to.equal(9);
 		})
 	})
 
 	it('by city', function() {
-		return count.byCity(songs[1].id, 'Tukluck', 'Tennessee', 'United States')
+		return count.byCity(songs[1].id, ['Tukluck', 'Tennessee', 'United States'])
 		.then(function(amount) {
 			expect(amount).to.equal(2);
-			return count.byCity(songs[0].id, 'Tukluck', 'Tennessee', 'United States')
+			return count.byCity(songs[0].id, ['Tukluck', 'Tennessee', 'United States'])
 		})
 		.then(function(amount){
 			expect(amount).to.equal(1);
-			return count.byCity(songs[0].id, 'Madrid', null, 'Spain')
+			return count.byCity(songs[0].id, ['Madrid', null, 'Spain'])
 		})
 		.then(function(amount) {
 			expect(amount).to.equal(1);
@@ -69,7 +69,7 @@ describe('Count', function() {
 	})
 
 	it('all by city', function() {
-		return count.allByCity('Salt Lake City', 'Utah', 'United States')
+		return count.allByCity(['Salt Lake City', 'Utah', 'United States'])
 		.then(function(amount) {
 			expect(amount).to.equal(11);
 		})
@@ -108,10 +108,10 @@ describe('Count', function() {
 	})
 
 	it('by venue', function() {
-		return count.byVenue(songs[0].id, 'USANA', 'Salt Lake City')
+		return count.byVenue(songs[0].id, ['USANA', 'Salt Lake City'])
 		.then(function(amount) {
 			expect(amount).to.equal(1);
-			return count.byVenue(songs[2].id, 'USANA', 'Salt Lake City')
+			return count.byVenue(songs[2].id, ['USANA', 'Salt Lake City'])
 		})
 		.then(function(amount) {
 			expect(amount).to.equal(2);
@@ -119,7 +119,7 @@ describe('Count', function() {
 	})
 
 	it('all by venue', function() {
-		return count.allByVenue('House show', 'Medford')
+		return count.allByVenue(['House show', 'Medford'])
 		.then(function(amount) {
 			expect(amount).to.equal(3);
 		})

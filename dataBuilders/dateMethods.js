@@ -65,21 +65,13 @@ var dateType = {
 }
 
 var song = {
-	genArr: function(range) {
-		return Song.byDate(range[0], range[1]);
-	},
-	total: function(range) {
-		return count.allByDate(range[0], range[1]);
-	}, 
-	innerTotal: function(range) {
-		return count.byDate(song.id, range[0], range[1]);
-	}
+	genArr: Song.byDate,
+	total: count.allByDate,
+	innerTotal: count.byDate
 }
 
 var show = {
-	genArr: function(range) {
-		return Show.byDate(range[0], range[1])
-	}
+	genArr: Show.byDate
 }
 
 var dataType = {

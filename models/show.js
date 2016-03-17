@@ -38,13 +38,53 @@ Show.mostRecent = function() {
 
 	TODO: all setlist!
 **/
-Show.byDate = function(start, end) {
-	end = end || Math.floor((Date.now()/1000)) + 1000000;
+Show.byDate = function(range) {
+	var start = range[0]
+	var end = range[1] || Math.floor((Date.now()/1000)) + 1000000;
 
 	return db('shows').select('*')
-	.andWhere('date', '>=', start)
+	.where('date', '>=', start)
  	.andWhere('date', '<', end)
  	.orderBy('date')
+}
+
+/**
+	returns all shows by venue/city
+**/
+Show.byVenue = function(location) {
+	return db('shows').select('*')
+	.where({venue: location[0]})
+	.andWhere({city: location[1]})
+	.orderBy('venue')
+}
+
+/**
+	returns all shows by city/state/country
+**/
+Show.byCity = function(location) {
+	return db('shows').select('*')
+	.where({city: location[0]})
+	.andWhere({state: location[1]})
+	.andWhere({country: location[2]})
+	.orderBy('city')
+}
+
+/**
+	returns all shows by state
+**/
+Show.byState = function(state) {
+	return db('shows').select('*')
+	.where({state: state})
+	.orderBy('state')
+}
+
+/**
+	returns all shows by country
+**/
+Show.byCountry = function(country) {
+	return db('shows').select('*')
+	.andWhere({country: country})
+	.orderBy('country')
 }
 
 /**
