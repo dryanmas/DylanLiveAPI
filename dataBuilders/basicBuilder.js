@@ -1,11 +1,30 @@
 var Promise = require('bluebird');
 
 /**
+	builds out an indiviudal unit of songs or shows 
+**/
+var buildUnit = Promise.coroutine(function *(unit, genArr, total) {
+	var innerArr = yield genArr(unit);
+
+	//song data
+	if (total) {
+		for (var i = 0; i < innerArr.length; i++) {
+			innerArr.count = yield total(innerArr[i]);
+		}
+	}
+
+	return innerArr;
+})
+
+/**
 	an abstract as fuck tool for building out the shape of my data
 **/
 var builder = Promise.coroutine(function *(arr, genArr, total, innerTotal) {
 	var data = {};
-	arr.forEach(function(item) {
+	
+	for (var i = 0; i < arr.length; i++) {
+		var item = arr[i];
+
 		if (total) {
 			//song data
 			var entry = {
@@ -14,28 +33,13 @@ var builder = Promise.coroutine(function *(arr, genArr, total, innerTotal) {
 			}
 		} else {
 			//show data
-			entry = yield buildUnit(item.unit(), genArr, innerTotal)
+			var entry = yield buildUnit(item.unit(), genArr, innerTotal);;
 		}
 		data[item.key()] = entry; 
-	})
+	}
 
 	return data;
 })
 
-/**
-	builds out an indiviudal unit of songs or shows 
-**/
-var buildUnit = Promise.coroutine(function *(unit, genArr, total) {
-	var innerArr = yield genArr(unit);
-
-	//song data
-	if (total) {
-		innerArr.forEach(function(item) {
-			innerArr.count = yeild total(item);
-		})
-	}
-
-	return innerArr;
-}))
 
 module.exports = builder;

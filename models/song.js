@@ -43,12 +43,12 @@ Song.byTitle = function(title) {
 Song.byDate = function(start, end) {
 	end = end || Math.floor((Date.now()/1000)) + 1000000;
 
-	return db('songs').select('*')
-	.whereIn('id', function() {
-		return db('shows').select('song_id')
+	return db.select('*').from('songs')
+	.whereIn('songs.id', function() {
+		this.select('song_id').from('shows')
 		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
- 		.andWhere('date', '>=', start)
- 		.andWhere('date', '<', end)
+ 	 	.andWhere('date', '>=', start)
+ 	 	.andWhere('date', '<', end)
 	})
 	.orderBy('title')
 }

@@ -10,10 +10,10 @@ var timestamp = function(date){
 var decade = {
 	collection: collections.decades,
 	start: function(decade) {
-		return timestamp(new Date(decade));
+		return timestamp(new Date(decade, 0));
 	},
 	end: function(decade) {
-		return timestamp(new Date(decade+10));
+		return timestamp(new Date(decade+10, 0));
 	},
 	toString: function(decade) {
 		return decade+'s';
@@ -23,10 +23,10 @@ var decade = {
 var year = {
 	collection: collections.years,
 	start: function(year) {
-		return timestamp(new Date(year));
+		return timestamp(new Date(year, 0));
 	},
 	end: function(year) {
-		return timestamp(new Date(year));
+		return timestamp(new Date(year+1, 0));
 	},
 	toString: function(year) {
 		return year.toString();
@@ -54,7 +54,7 @@ var month = {
 	toString: function(pair) {
 		var month = pair[0];
 		var year = pair[1];
-		return month+'/'+year;
+		return month+'-'+year;
 	} 
 }
 
@@ -71,7 +71,7 @@ var song = {
 	total: function(range) {
 		return count.allByDate(range[0], range[1]);
 	}, 
-	innerTotal = function(song) {
+	innerTotal: function(range) {
 		return count.byDate(song.id, range[0], range[1]);
 	}
 }

@@ -4,31 +4,36 @@ var count = require('./count');
 
 var collections = {};
 
-//TODO: might need to make the first two promises... 
-//we'll see how yield works  
+//TODO: fix the promisification of the first two 
 
 /**
 	returns an array of the decades in which Dylan has been active
 	heads up: not a promise
 **/
 collections.decades = function() {
-	var decades = [];
-	for (var year = 1960; year <= (new Date).getFullYear(); year+=10) {
-		years.push(year);
-	}
-	return years;
-}
+	//TODO: HACKY SHIT, refactor please
+	return count.all().then(function() {
+		var decades = [];
+		for (var year = 1960; year <= (new Date).getFullYear(); year+=10) {
+			decades.push(year);	
+		}
+		return decades;
+	})
+};
 
 /**
 	returns an array of the years in which Dylan has been active
 	heads up: not a promise
 **/
 collections.years = function() {
-	var years = [];
-	for (var year = 1960; year <= (new Date).getFullYear(); year++) {
-		years.push(year)
-	}
-	return years;
+	//TODO: HACKY SHIT, refactor please
+	return count.all().then(function() {
+		var years = [];
+		for (var year = 1960; year <= (new Date).getFullYear(); year++) {
+			years.push(year)
+		}
+		return years;
+	})
 }
 
 /**
