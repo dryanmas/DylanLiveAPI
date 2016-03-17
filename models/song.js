@@ -1,61 +1,42 @@
 var db = require('../db');
 var Promise = require('bluebird');
 var count = require('./helpers/count');
+var helpers = require('./helpers/modelHelpers');
 
 var Song = {};
 
-//finds all songs, sorted by count
-//TODO: sort alphebatically? 
-// Song.all = function() {
-// 	return Song.all()
-// 	.then(function(songs) {
-// 		return Promise.all(songs.map(function(song) {
-// 			return count.all(song.id)
-// 			.then(function(count) {
-// 				song.count = count;
-// 				return song; 
-// 			})
-// 		}))
-// 	})
-// 	.then(function(songs) {
-// 		return songs.sort(function(x, y) {
-// 			return y.count - x.count;
-// 		})
-// 	})
-// }
-
+/**
+	returns a song with a given title
+**/
 Song.findByTitle = function(title) {
-	return findBy('title', title);
+	return helpers.find(title, 'title', 'songs');
 }
 
-Song.findByUrl = function(url) {
-	return findBy('url', url);
-}
-
+/**
+	inserts an array of songs, returning an array of ids
+**/
 Song.insert = function(songs) {
-	return Promise.all(songs.map(function(song) {
-		return Song.findByTitle(song.title)
-		.then(function(exists) {
-			if (exists) throw "Duplicate Song!";
-			return song;
-		})
-	}))
-	.then(function(songs) {		
+	return Song.allUnique(songs)
+	.then(function() {		
 		return db('songs').insert(songs).returning('id'); 
 	})
 }
 
-var pluckFirst = function(rows) {
-	return rows[0];
+/**
+	checks that a song is not already in the DB
+**/
+Song.checkUnique = function(song) {
+	return Song.findByTitle(song.title)
+	.then(function(exists) {
+		if (exists) throw 'Duplicate song!';
+	})
 }
 
-var findBy = function(key, value) {
-	var criteria = {};
-	criteria[key] = value;
-
-	return db('songs').select('*')
-	.where(criteria)
-	.then(pluckFirst)
+/**
+	checks that none of the songs are already in the DB
+**/
+Song.allUnique = function(songs) {
+	return Promise.all(songs.map(Song.checkUnique));
 }
 
 module.exports = Song;

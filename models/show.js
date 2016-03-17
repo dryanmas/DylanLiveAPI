@@ -1,41 +1,26 @@
 var db = require('../db');
 var Promise = require('bluebird');
 var Setlist = require('./setlist');
+var helpers = require('./helpers/modelHelpers');
+
 var Show = {};
 
-
-// Show.all = function() {
-// 	return db('shows').select('*')
-// 	.then(function(shows) {
-// 		return Promise.all(shows.map(function(show) {
-// 			return Setlist.findByShow(show.id);
-// 		}))
-// 	})
-// }
-
-// Show.findByDate = function(date) {
-// 	return findBy('date', date);
-// }
-
-Show.findByUrl = function(url) {
-	return findBy('url', url);
-}
-
+/**
+	inserts an array of shows and each coresponding setlist
+**/
 Show.insert = function(shows, setlists) {
-	return Promise.all(shows.map(function(show) {
-		return Show.findByUrl(show.url)
-		.then(function(exists) {
-			if (exists) throw 'Duplicate show';
-		})
-	}))
+	return Show.allUnique(shows)
 	.then(function() {
 		return db('shows').insert(shows).returning('id')
 	})
 	.then(function(ids) {	
-		return Setlist.insertAll(setlists, ids);
+		return Setlist.insert(setlists, ids);
 	})
 }
 
+/**
+	returns the most recently performed show
+**/
 Show.mostRecent = function() {
 	return db('shows').max('date')
 	.then(function(rows) {
@@ -43,28 +28,31 @@ Show.mostRecent = function() {
 		return db('shows').select('*')
 		.where({date: date})
 	})
-	.then(pluckFirst);
+	.then(helpers.pluckFirst);
 }
 
-// Show.allBySong = function(songId) {
-// 	return db('shows').select('*')
-// 	.whereIn('id', function() {
-// 		db('live_songs').select('show_id')
-// 		.where({song_id: songId})
-// 	})
-// }
-
-var pluckFirst = function(rows) {
-	return rows[0];
+/**
+	finds a show based on url
+**/
+Show.findByUrl = function(url) {
+	return helpers.find(url, 'url', 'shows');
 }
 
-var findBy = function(key, value) {
-	var criteria = {};
-	criteria[key] = value;
+/**
+	checks that a show is not already in the DB
+**/
+Show.checkUnique = function(show) {
+	return Show.findByUrl(show.url)
+	.then(function(exists) {
+		if (exists) throw 'Duplicate show!';
+	})
+}
 
-	return db('shows').select('*')
-	.where(criteria)
-	.then(pluckFirst)
+/**
+	checks that none of the shows are already in the DB
+**/
+Show.allUnique = function(shows) {
+	return Promise.all(shows.map(Show.checkUnique));
 }
 
 

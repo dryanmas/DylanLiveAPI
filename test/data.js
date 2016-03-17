@@ -161,7 +161,7 @@ var populateDB = function() {
 		})
 	})
 	.then(function() {
-		return Setlist.insertAll(setlists, shows.map(function(show) {
+		return Setlist.insert(setlists, shows.map(function(show) {
 			return show.id;
 		}))
 	})
