@@ -23,7 +23,9 @@ describe('Collections', function() {
 		return collections.cities()
 		.then(function(cities) {
 			expect(cities.length).to.equal(5)
-			expect(cities[0]).to.equal('Clearfield');
+			expect(cities[0][0]).to.equal('Clearfield');
+			expect(cities[0][1]).to.equal('Utah');
+			expect(cities[1][2]).to.equal('Spain');
 		})
 	})
 
@@ -55,7 +57,8 @@ describe('Collections', function() {
 		return collections.venues()
 		.then(function(venues) {
 			expect(venues.length).to.equal(6)
-			expect(venues[0]).to.equal('Another venue');
+			expect(venues[0][0]).to.equal('Another venue');
+			expect(venues[0][1]).to.equal('Tukluck');
 		})
 	})
 })

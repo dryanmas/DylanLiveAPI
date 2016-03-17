@@ -102,24 +102,34 @@ collections.albums = getAll('release', 'songs');
 
 /**
 	gets all venues in which Dylan has played
+	returns an array of tuples of the form [venue, city]
 **/
 collections.venues = function() {
-	return db('shows').select('venue')
+	return db('shows').select('venue', 'city')
 	.whereNotNull('venue')
 	.distinct('venue', 'city')
 	.orderBy('venue')
-	.then(rowMap)
+	.then(function(rows) {
+		return rows.map(function(row) {
+			return [row.venue, row.city];
+		})
+	})
 }
 
 /**
 	gets all cities in which Dylan has played
+	returns an array of arrays of the form [city, state, country]
 **/
 collections.cities = function() {
-	return db('shows').select('city')
+	return db('shows').select('city', 'state', 'country')
 	.whereNotNull('city')
 	.distinct('city', 'state', 'country')
 	.orderBy('city')
-	.then(rowMap)
+	.then(function(rows) {
+		return rows.map(function(row) {
+			return [row.city, row.state, row.country];
+		})
+	})
 }
 
 module.exports = collections;

@@ -37,6 +37,19 @@ var byVenue = function(idCheck, venue, city) {
 }
 
 /**
+	counts songs by city performed
+**/
+var byCity = function(idCheck, city, state, country) {
+	return db('shows').count('*')
+	.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
+	.where(idCheck)
+	.andWhere({city: city})
+	.andWhere({state: state})
+	.andWhere({country: country})
+	.then(parse)
+}
+
+/**
 	counts songs by location performed
 **/
 var byLocation = function(locationType) {
@@ -51,11 +64,6 @@ var byLocation = function(locationType) {
 		.then(parse)
 	}
 }
-
-/**
-	counts songs by city performed
-**/
-var byCity = byLocation('city');
 
 /**
 	counts songs by state performed
@@ -113,15 +121,15 @@ count.allByDate = function(start, end) {
 /**
 	counts all performances of a specified song in a specified city
 **/
-count.byCity = function(id, city) {
-	return byCity({song_id: id}, city);
+count.byCity = function(id, city, state, country) {
+	return byCity({song_id: id}, city, state, country);
 }
 
 /**
 	counts all performances of all songs in a specified city
 **/
-count.allByCity = function(city) {
-	return byCity({}, city);
+count.allByCity = function(city, state, country) {
+	return byCity({}, city, state, country);
 } 
 
 /**

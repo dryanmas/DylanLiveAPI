@@ -54,14 +54,14 @@ describe('Count', function() {
 	})
 
 	it('by city', function() {
-		return count.byCity(songs[1].id, 'Tukluck')
+		return count.byCity(songs[1].id, 'Tukluck', 'Tennessee', 'United States')
 		.then(function(amount) {
 			expect(amount).to.equal(2);
-			return count.byCity(songs[0].id, 'Tukluck')
+			return count.byCity(songs[0].id, 'Tukluck', 'Tennessee', 'United States')
 		})
 		.then(function(amount){
 			expect(amount).to.equal(1);
-			return count.byCity(songs[0].id, 'Madrid')
+			return count.byCity(songs[0].id, 'Madrid', null, 'Spain')
 		})
 		.then(function(amount) {
 			expect(amount).to.equal(1);
@@ -69,7 +69,7 @@ describe('Count', function() {
 	})
 
 	it('all by city', function() {
-		return count.allByCity('Salt Lake City')
+		return count.allByCity('Salt Lake City', 'Utah', 'United States')
 		.then(function(amount) {
 			expect(amount).to.equal(11);
 		})
