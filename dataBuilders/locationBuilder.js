@@ -7,8 +7,7 @@ var Song = require('../models/song');
 var dateBuilder = Promise.coroutine(function *(locationType, dataType) {
   var location = locationMethods[locationType];
 
-  var arr = yield location.collection();
-  arr = arr.map(function(item) {
+  var collection = (yield location.collection()).map(function(item) {
     return {
       value: function(){
         return item;
@@ -20,13 +19,13 @@ var dateBuilder = Promise.coroutine(function *(locationType, dataType) {
   })
   
   //dependant on if we working with shows or songs
-  var methods = location.dataType[dataType];
+  var methods = location.dataMethods[dataType];
 
-  var buildArr = methods.buildArr;
+  var makeArr = methods.makeArr;
   var countOne = methods.countOne;
   var countTotal = methods.countTotal;
 
-  return builder(arr, buildArr, countOne, countTotal)
+  return builder(collection, makeArr, countOne, countTotal)
 })
 
 module.exports = {
