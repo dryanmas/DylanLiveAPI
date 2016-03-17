@@ -1,7 +1,7 @@
 var Song = require('../models/song');
 var Show = require('../models/show');
-var collections = require('../models/helpers/collections');
-var count = require('../models/helpers/count');
+var collections = require('../helpers/collections');
+var count = require('../helpers/count');
 
 var timestamp = function(date){
 	return Math.floor(date.getTime()/1000);

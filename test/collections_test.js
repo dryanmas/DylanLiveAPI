@@ -1,5 +1,5 @@
 var db = require('../db');
-var collections = require('../models/helpers/collections');
+var collections = require('../helpers/collections');
 
 var songs = require('./data').songs;
 var shows = require('./data').shows;

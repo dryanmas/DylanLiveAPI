@@ -1,7 +1,7 @@
 var db = require('../db');
 var Promise = require('bluebird');
-var count = require('./helpers/count');
-var helpers = require('./helpers/modelHelpers');
+var count = require('../helpers/count');
+var helpers = require('./helpers');
 
 var Song = {};
 

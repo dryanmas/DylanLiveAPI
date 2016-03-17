@@ -1,5 +1,5 @@
 var db = require('../db');
-var count = require('../models/helpers/count');
+var count = require('../helpers/count');
 
 var songs = require('./data').songs;
 var shows = require('./data').shows;
