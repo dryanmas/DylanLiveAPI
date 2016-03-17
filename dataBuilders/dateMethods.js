@@ -1,7 +1,7 @@
 var Song = require('../models/song');
 var Show = require('../models/show');
+var Count = require('../helpers/count').date;
 var collections = require('../helpers/collections');
-var count = require('../helpers/count');
 
 var timestamp = function(date){
 	return Math.floor(date.getTime()/1000);
@@ -65,13 +65,13 @@ var dateType = {
 }
 
 var song = {
-	genArr: Song.byDate,
-	total: count.allByDate,
-	innerTotal: count.byDate
+	makeArr: Song.byDate,
+	countOne: Count.oneSong,
+	countTotal: Count.total
 }
 
 var show = {
-	genArr: Show.byDate
+	makeArr: Show.byDate
 }
 
 var dataType = {

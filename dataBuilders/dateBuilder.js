@@ -8,13 +8,12 @@ var Song = require('../models/song');
 var dateBuilder = Promise.coroutine(function *(dateType, dataType) {
 	var date = dateMethods[dateType];
 
-	var arr = yield date.collection();
-	arr = arr.map(function(item) {
+	var collection = (yield date.collection()).map(function(item) {
 		return {
-			unit: function(){
+			value: function(){
 				return [date.start(item), date.end(item)]
 			},
-			key: function() {
+			toString: function() {
 				return date.toString(item);	
 			}
 		}
@@ -23,11 +22,11 @@ var dateBuilder = Promise.coroutine(function *(dateType, dataType) {
 	//dependant on if we working with shows or songs
 	var methods = dataMethods[dataType];
 
-	var genArr = methods.genArr;
-	var total = methods.total;
-	var innerTotal = methods.innerTotal;
+	var makeArr = methods.makeArr;
+	var countOne = methods.countOne;
+	var countTotal = methods.countTotal;
 
-	return builder(arr, genArr, total, innerTotal)
+	return builder(collection, makeArr, countOne, countTotal)
 })
 
 module.exports = {

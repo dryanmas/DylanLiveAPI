@@ -1,45 +1,45 @@
 var Promise = require('bluebird');
 
+/** an abstract as fuck tool for building out the shape of my data **/
+
 /**
 	builds out an indiviudal unit of songs or shows 
 **/
-var buildUnit = Promise.coroutine(function *(unit, genArr, total) {
-	var innerArr = yield genArr(unit);
+var build = Promise.coroutine(function *(value, buildArr, countOne) {
+	var arr = yield buildArr(value);
 
 	//song data
-	if (total) {
-		for (var i = 0; i < innerArr.length; i++) {
-			innerArr.count = yield total(innerArr[i].id, unit);
+	if (countOne) {
+		for (var i = 0; i < arr.length; i++) {
+			arr.count = yield countOne(arr[i].id, value);
 		}
 	}
 
-	return innerArr;
+	return arr;
 })
 
 /**
-	an abstract as fuck tool for building out the shape of my data
+	builds out full collection of data 
 **/
-var builder = Promise.coroutine(function *(arr, genArr, total, innerTotal) {
+module.exports = Promise.coroutine(function *(collection, makeArr, countOne, countTotal) {
 	var data = {};
 	
-	for (var i = 0; i < arr.length; i++) {
-		var item = arr[i];
+	for (var i = 0; i < collection.length; i++) {
+		var value = collection[i].value();
+		var key = collection[i].toString();
 
-		if (total) {
+		if (countTotal) {
 			//song data
 			var entry = {
-				all: yield buildUnit(item.unit(), genArr, innerTotal),
-				total: yield total(item.unit())
+				all: yield build(value, makeArr, countOne),
+				total: yield countTotal(value)
 			}
 		} else {
 			//show data
-			var entry = yield buildUnit(item.unit(), genArr, innerTotal);;
+			var entry = yield build(value, makeArr, countOne);;
 		}
-		data[item.key()] = entry; 
+		data[key] = entry; 
 	}
 
 	return data;
 })
-
-
-module.exports = builder;

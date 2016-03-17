@@ -1,6 +1,6 @@
 var db = require('../db');
 var Promise = require('bluebird');
-var count = require('./count');
+var Count = require('./count');
 
 var collections = {};
 
@@ -53,7 +53,7 @@ collections.months = Promise.coroutine(function *() {
 			var startStamp = Math.floor(start.getTime()/1000); 
 			var endStamp = Math.floor(end.getTime()/1000);
 
-			var amount = yield count.allByDate([startStamp, endStamp]);
+			var amount = yield Count.date.total([startStamp, endStamp]);
 			if (amount) months.push([month+1, year]);
 		}
 	}
