@@ -121,7 +121,17 @@ describe('Location Builder', function() {
 describe('Album Builder', function() {
   beforeEach(populateDB);
 
-  it('should build by ablum', function() {
+  it('should build by album', function() {
+    return albumBuilder.song()
+    .then(function(data) {
+      expect(Object.keys(data).length).to.equal(4);
+      expect(data['release1'].all.length).to.equal(4);
+      expect(data['release4'].total).to.equal(2); 
 
+      return albumBuilder.show()
+    })
+    .then(function(data) {
+      expect(data['release1'].length).to.equal(7);
+    })
   })
 })

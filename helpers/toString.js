@@ -39,8 +39,13 @@ location.state = function(state) {
 location.country = function(country) {
   return country;
 };
+ 
+var album = function(album) {
+  return album;
+}
 
 module.exports = {
   location: location,
-  date: date
+  date: date,
+  album: album
 }

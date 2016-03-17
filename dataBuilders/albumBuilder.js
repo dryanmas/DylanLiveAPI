@@ -1,29 +1,37 @@
-var Song = require('../models/song');
-var Show = require('../models/show');
-var collections = require('../helpers/collection');
-var count = require('../helpers/count');
+var Promise = require('bluebird');
+var builder = require('./basicBuilder');
+var albumMethods = require('./albumMethods');
 
+var albumBuilder = Promise.coroutine(function *(dataType) {
+  var album = albumMethods;
 
+  var collection = (yield album.collection()).map(function(item) {
+    return {
+      value: function(){
+        return item
+      },
+      toString: function() {
+        return item; 
+      }
+    }
+  })
+  
+  //dependant on if we working with shows or songs
+  var methods = album.dataMethods[dataType];
 
-var dataType = {
-  song: {
-    genArr: Song.byAlbum,
-    total: count.allByAlbum,
-    innerTotal: count.byAlbum
+  var makeArr = methods.makeArr;
+  var countOne = methods.countOne;
+  var countTotal = methods.countTotal;
+ 
+  return builder(collection, makeArr, countOne, countTotal)
+})
+
+module.exports = {
+  song: function() {
+    return albumBuilder('song');
   },
-  show: {
-    genArr: Show.byAlbum
+  show: function() {
+    return albumBuilder('show');
   }
 }
 
-var methods = {
-  collection: collections.albums,
-  toString: function(album) {
-    return album;
-  } 
-}
-
-return {
-  dataType: dataType,
-  methods: methods
-}

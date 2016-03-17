@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 	builds out an indiviudal unit of songs or shows 
 **/
 var build = Promise.coroutine(function *(value, makeArr, countOne) {
+	
 	var arr = yield makeArr(value);
 
 	//song data

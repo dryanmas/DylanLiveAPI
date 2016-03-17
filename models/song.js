@@ -55,6 +55,15 @@ Song.byDate = function(range) {
 }
 
 /**
+	returns all songs off of an album 
+**/
+Song.byAlbum = function(album) {
+	return db('songs').select('*')
+	.where({release: album})
+	.orderBy('title')
+}
+
+/**
 	inserts an array of songs, returning an array of ids
 **/
 Song.insert = function(songs) {

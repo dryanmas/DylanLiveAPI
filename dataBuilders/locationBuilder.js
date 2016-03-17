@@ -1,8 +1,6 @@
 var Promise = require('bluebird');
 var builder = require('./basicBuilder');
 var locationMethods = require('./locationMethods')
-var count = require('../helpers/count');
-var Song = require('../models/song');
 
 var dateBuilder = Promise.coroutine(function *(locationType, dataType) {
   var location = locationMethods[locationType];

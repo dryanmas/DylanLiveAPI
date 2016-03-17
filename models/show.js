@@ -56,8 +56,6 @@ Show.allUnique = function(shows) {
 }
 
 //	TODO: all setlist!
-
-
 /**
 	returns all shows within a date range
 	start inclusive, end exclusive and optional
@@ -71,6 +69,20 @@ Show.byDate = function(range) {
 	.where('date', '>=', start)
  	.andWhere('date', '<', end)
  	.orderBy('date')
+}
+
+/**
+	returns all shows where at least one song was played 
+	off a specified album 
+**/
+Show.byAlbum = function(album) {
+	return db.select('*').from('shows')
+	.whereIn('shows.id', function() {
+		this.select('show_id').from('songs')
+		.leftJoin('live_songs', 'songs.id', 'song_id')
+	 	.where({release: album})
+	})
+	.orderBy('date');
 }
 
 /** ALL LOCATION BASED METHODS **/
