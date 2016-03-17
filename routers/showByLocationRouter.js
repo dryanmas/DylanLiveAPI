@@ -1,5 +1,9 @@
 var router = require('express').Router();
 
+router.get('/venue', function(req, res) {
+
+})
+
 router.get('/city', function(req, res) {
 	
 })

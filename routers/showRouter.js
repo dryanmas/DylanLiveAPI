@@ -13,8 +13,8 @@ router.get('/', function(req, res) {
 
 })
 
-router.get('byVenue', function(req, res) {
-
+router.get('/album', function(req, res) {
+  
 })
 
 module.exports = router;
