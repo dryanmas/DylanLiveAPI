@@ -1,4 +1,20 @@
-var location = {}
+var date = {};
+
+date.decade = function(decade) {
+  return decade+'s';
+};
+
+date.year = function(year) {
+  return year.toString();
+};
+
+date.month = function(pair) {
+  var month = pair[0];
+  var year = pair[1];
+  return month+'-'+year;
+} 
+
+var location = {};
 
 location.venue = function(location) {
   return location.join(', ');
@@ -25,5 +41,6 @@ location.country = function(country) {
 };
 
 module.exports = {
-  location: location
+  location: location,
+  date: date
 }

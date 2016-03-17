@@ -2,45 +2,45 @@ var Song = require('../models/song');
 var Show = require('../models/show');
 var Count = require('../helpers/count').date;
 var Collection = require('../helpers/collection').date;
+var ToString = require('../helpers/toString').date;
+
+var dataMethods = {
+	song: {
+		makeArr: Song.byDate,
+		countOne: Count.oneSong,
+		countTotal: Count.total
+	},
+	show: {
+		makeArr: Show.byDate
+	}
+}
 
 var timestamp = function(date){
 	return Math.floor(date.getTime()/1000);
 }
 
-var decade = {
-	collection: Collection.decade,
-	start: function(decade) {
+var start = {
+	decade: function(decade) {
 		return timestamp(new Date(decade, 0));
 	},
-	end: function(decade) {
-		return timestamp(new Date(decade+10, 0));
-	},
-	toString: function(decade) {
-		return decade+'s';
-	}
-}
-
-var year = {
-	collection: Collection.year,
-	start: function(year) {
+	year: function(year) {
 		return timestamp(new Date(year, 0));
 	},
-	end: function(year) {
-		return timestamp(new Date(year+1, 0));
-	},
-	toString: function(year) {
-		return year.toString();
-	}
-}
-
-var month = {
-	collection: Collection.month,
-	start: function(pair) {
+	month: function(pair) {
 		var month = pair[0];
 		var year = pair[1];
 		return timestamp(new Date(year, month-1));
+	}
+}
+
+var end = {
+	decade: function(decade) {
+		return timestamp(new Date(decade+10, 0));
 	},
-	end: function(pair) {
+	year: function(year) {
+		return timestamp(new Date(year+1, 0));
+	},
+	month: function(pair) {
 		var month = pair[0];
 		var year = pair[1];
 
@@ -50,37 +50,20 @@ var month = {
 		}
 
 		return timestamp(new Date(year, month))
-	},
-	toString: function(pair) {
-		var month = pair[0];
-		var year = pair[1];
-		return month+'-'+year;
-	} 
+	}
 }
 
-var dateType = {
-	decade: decade,
-	year: year,
-	month: month
-}
+var methods = {};
+var intervals = ['decade', 'year', 'month']
 
-var song = {
-	makeArr: Song.byDate,
-	countOne: Count.oneSong,
-	countTotal: Count.total
-}
+intervals.forEach(function(type) {
+	methods[type] = {
+		collection: Collection[type],
+		start: start[type],
+		end: end[type],
+		toString: ToString[type],
+		dataMethods: dataMethods
+	}
+})
 
-var show = {
-	makeArr: Show.byDate
-}
-
-var dataType = {
-	song: song,
-	show: show
-}
-
-module.exports = {
-	dateType: dateType,
-	dataType: dataType
-}
-
+module.exports = methods;

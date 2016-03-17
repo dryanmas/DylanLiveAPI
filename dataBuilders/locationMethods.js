@@ -4,25 +4,24 @@ var Count = require('../helpers/count').location;
 var Collection = require('../helpers/collection').location;
 var ToString = require('../helpers/toString').location;
 
-var locations = ['venue', 'city', 'state', 'country']
-
 var methods = {}
+var locations = ['venue', 'city', 'state', 'country'];
 
-locations.forEach(function(locationType) {
+locations.forEach(function(type) {
   var dataMethods = {
     song: {
-      makeArr: Song[locationType],
-      countOne: Count[locationType].oneSong,
-      countTotal: Count[locationType].total
+      makeArr: Song[type],
+      countOne: Count[type].oneSong,
+      countTotal: Count[type].total
     },
     show: {
-      makeArr: Show[locationType]
+      makeArr: Show[type]
     }
   }
 
-  methods[locationType] = {
-    collection: Collection[locationType],
-    toString: ToString[locationType],
+  methods[type] = {
+    collection: Collection[type],
+    toString: ToString[type],
     dataMethods: dataMethods,
   }
 })

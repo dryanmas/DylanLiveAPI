@@ -1,7 +1,6 @@
 var Promise = require('bluebird');
 var builder = require('./basicBuilder');
-var dateMethods = require('./dateMethods').dateType;
-var dataMethods = require('./dateMethods').dataType;
+var dateMethods = require('./dateMethods');
 var count = require('../helpers/count');
 var Song = require('../models/song');
 
@@ -20,7 +19,7 @@ var dateBuilder = Promise.coroutine(function *(dateType, dataType) {
 	})
 	
 	//dependant on if we working with shows or songs
-	var methods = dataMethods[dataType];
+	var methods = date.dataMethods[dataType];
 
 	var makeArr = methods.makeArr;
 	var countOne = methods.countOne;
