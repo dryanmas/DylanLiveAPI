@@ -1,6 +1,6 @@
 var db = require('../db');
 
-var count = {}
+/** MISC COUNT HELPERS **/
 
 /**
 	helper function to grab and parse counts
@@ -79,101 +79,108 @@ var byCountry = byLocation('country');
 /**
 	counts all performances of a specified song
 **/
-count.all = function(id) {
+var all = function(songId) {
 	return db('live_songs')
 	.count('*')
-	.where({song_id: id})
+	.where({song_id: songId})
 	.then(parse) 
 }
 
-/**
-	counts all performances of a specified song off a specified album
+/** 
+	COUNT FUNCTIONS
+ 	for each type there will be a 'oneSong' function to count
+ 	all type of one specified song and a 'total' function
+ 	to count that type for all songs
 **/
-count.byAlbum = count.all;
 
 /**
-	counts all performances of all songs off a specified album
+	counts all performances of off a specified album
 **/
-count.allByAlbum = function(album) {
-	return db('songs').count('*')
-	.leftJoin('live_songs', 'songs.id', 'live_songs.song_id')
-	.where({release: album})
-	.then(parse)
+var album = {
+	oneSong: all,
+	total: function(album) {
+		return db('songs').count('*')
+		.leftJoin('live_songs', 'songs.id', 'live_songs.song_id')
+		.where({release: album})
+		.then(parse)
+	}
 }
 
 /**
-	counts all performances of a specified song between a start and
-	optional end date
+	counts all performances between a start and optional end date
 	expects start and end to be timestamps
 **/
-count.byDate = function(id, range) {
-	return byDate({song_id: id}, range);
-}
-
-/**
-	counts all performances of all songs between a start and
-	optional end date
-	expects start and end to be timestamps
-**/
-count.allByDate = function(range) {
-	return byDate({}, range);
+var date = {
+	oneSong: function(songId, range) {
+		return byDate({song_id: songId}, range);
+	},
+	total: function(range) {
+		return byDate({}, range);
+	} 
 } 
 
 /**
-	counts all performances of a specified song in a specified city/state/country
+	counts all performances in a specified venue/city
 **/
-count.byCity = function(id, location) {
-	return byCity({song_id: id}, location);
+var venue = {
+	oneSong: function(songId, location) {
+		return byVenue({song_id: songId}, location);
+	},
+	total: function(location) {
+		return byVenue({}, location);
+	}
 }
 
 /**
-	counts all performances of all songs in a specified city
+	counts all performances in a specified city/state/country
 **/
-count.allByCity = function(location) {
-	return byCity({}, location);
+var city = {
+	oneSong: function(songId, location) {
+		return byCity({song_id: songId}, location);
+	},
+	total: function(location) {
+		return byCity({}, location);
+	}
 } 
 
 /**
-	counts all performances of a specified song in a specified state
+	counts all performances in a specified state
 **/
-count.byState = function(id, state) {
-	return byState({song_id: id}, state);
+var state = {
+	oneSong: function(songId, state) {
+		return byState({song_id: songId}, state)
+	},
+	total: function(state) {
+		return byState({}, state);
+	} 
+}
+
+
+/**
+	counts all performances in a specified country
+**/
+var country = {
+	oneSong: function(songId, country) {
+		return byCountry({song_id: songId}, country);
+	},
+	total: function(country) {
+		return byCountry({}, country);
+	} 
 }
 
 /**
-	counts all performances of all songs in a specified state
+	all location based count functions
 **/
-count.allByState = function(state) {
-	return byState({}, state);
+var location = {
+	venue: venue,
+	city: city,
+	state: state,
+	country: country
 } 
 
-/**
-	counts all performances of a specified song in a specified country
-**/
-count.byCountry = function(id, country) {
-	return byCountry({song_id: id}, country);
-}
-
-/**
-	counts all performances of all songs in a specified country
-**/
-count.allByCountry = function(country) {
-	return byCountry({}, country);
-} 
-
-/**
-	counts all performances of a specified songs in a specified venue/city
-	(excuse the excessive use of 'specified')
-**/
-count.byVenue = function(id, location) {
-	return byVenue({song_id: id}, location);
-}
-
-/**
-	counts all performances of all songs in a specified venue/city
-**/
-count.allByVenue = function(location) {
-	return byVenue({}, location);
-} 
-
-module.exports = count; 
+module.exports = {
+	all: all,
+	album: album,
+	date: date,
+	location: location
+}; 
