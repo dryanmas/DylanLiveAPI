@@ -61,7 +61,7 @@ Show.allUnique = function(shows) {
 	start inclusive, end exclusive and optional
 	expects start and end to be timestamps
 **/
-Show.byDate = function(range) {
+Show.date = function(range) {
 	var start = range[0]
 	var end = range[1] || Math.floor((Date.now()/1000)) + 1000000;
 
@@ -75,7 +75,7 @@ Show.byDate = function(range) {
 	returns all shows where at least one song was played 
 	off a specified album 
 **/
-Show.byAlbum = function(album) {
+Show.album = function(album) {
 	return db.select('*').from('shows')
 	.whereIn('shows.id', function() {
 		this.select('show_id').from('songs')
@@ -87,12 +87,10 @@ Show.byAlbum = function(album) {
 
 /** ALL LOCATION BASED METHODS **/
 
-Show.location = {}
-
 /**
 	returns all shows by venue/city
 **/
-Show.location.venue = function(location) {
+Show.venue = function(location) {
 	return db('shows').select('*')
 	.where({venue: location[0]})
 	.andWhere({city: location[1]})
@@ -102,7 +100,7 @@ Show.location.venue = function(location) {
 /**
 	returns all shows by city/state/country
 **/
-Show.location.city = function(location) {
+Show.city = function(location) {
 	return db('shows').select('*')
 	.where({city: location[0]})
 	.andWhere({state: location[1]})
@@ -113,7 +111,7 @@ Show.location.city = function(location) {
 /**
 	returns all shows by state
 **/
-Show.location.state = function(state) {
+Show.state = function(state) {
 	return db('shows').select('*')
 	.where({state: state})
 	.orderBy('state')
@@ -122,7 +120,7 @@ Show.location.state = function(state) {
 /**
 	returns all shows by country
 **/
-Show.location.country = function(country) {
+Show.country = function(country) {
 	return db('shows').select('*')
 	.andWhere({country: country})
 	.orderBy('country')

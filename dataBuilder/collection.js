@@ -2,14 +2,14 @@ var db = require('../db');
 var Promise = require('bluebird');
 var Count = require('./count');
 
+var Collection = {};
+
 /** ALL DATE BASED COLLECTIONS **/
 
-var date = {};
 /**
 	returns an array of the decades in which Dylan has been active
-	heads up: not a promise
 **/
-date.decade = function() {
+Collection.decade = function() {
 	return new Promise(function(resolve) {
 		var decades = [];
 		for (var year = 1960; year <= (new Date).getFullYear(); year+=10) {
@@ -21,9 +21,8 @@ date.decade = function() {
 
 /**
 	returns an array of the years in which Dylan has been active
-	heads up: not a promise
 **/
-date.year = function() {
+Collection.year = function() {
 	return new Promise(function(resolve) {
 		var years = [];
 		for (var year = 1960; year <= (new Date).getFullYear(); year++) {
@@ -38,7 +37,7 @@ date.year = function() {
 	the return array contains tuples of the form [month, year]
 	ex. [6, 1995] for June of 1995
 **/
-date.month = Promise.coroutine(function *() {
+Collection.month = Promise.coroutine(function *() {
 	var months = [];
 	for (var year = 1960; year <= (new Date).getFullYear(); year++) {
 		for (var month = 0; month < 12; month++ ) {
@@ -81,14 +80,13 @@ var getAll = function(type, table) {
 	}
 }
 
-/** ALL DATE BASED COLLECTIONS **/
+/** ALL LOCATION BASED COLLECTIONS **/
 
-var location = {};
 /**
 	gets all venues in which Dylan has played
 	returns an array of tuples of the form [venue, city]
 **/
-location.venue = function() {
+Collection.venue = function() {
 	return db('shows').select('venue', 'city')
 	.whereNotNull('venue')
 	.distinct('venue', 'city')
@@ -104,7 +102,7 @@ location.venue = function() {
 	gets all cities in which Dylan has played
 	returns an array of arrays of the form [city, state, country]
 **/
-location.city = function() {
+Collection.city = function() {
 	return db('shows').select('city', 'state', 'country')
 	.whereNotNull('city')
 	.distinct('city', 'state', 'country')
@@ -119,21 +117,17 @@ location.city = function() {
 /**
 	gets all states in which Dylan has played
 **/
-location.state = getAll('state', 'shows');
+Collection.state = getAll('state', 'shows');
 
 /**
 	gets all countries in which Dylan has played
 **/
-location.country = getAll('country', 'shows');
+Collection.country = getAll('country', 'shows');
 
 /**
 	gets all albums off of which Dylan has played a song live
 **/
-var album = getAll('release', 'songs');
+Collection.album = getAll('release', 'songs');
 
 
-module.exports = {
-	date: date,
-	location: location,
-	album: album
-}
+module.exports = Collection;

@@ -76,10 +76,12 @@ var byState = byLocation('state');
 **/
 var byCountry = byLocation('country');
 
+var Count = {};
+
 /**
 	counts all performances of a specified song
 **/
-var all = function(songId) {
+Count.all = function(songId) {
 	return db('live_songs')
 	.count('*')
 	.where({song_id: songId})
@@ -96,8 +98,8 @@ var all = function(songId) {
 /**
 	counts all performances of off a specified album
 **/
-var album = {
-	oneSong: all,
+Count.album = {
+	oneSong: Count.all,
 	total: function(album) {
 		return db('songs').count('*')
 		.leftJoin('live_songs', 'songs.id', 'live_songs.song_id')
@@ -110,7 +112,7 @@ var album = {
 	counts all performances between a start and optional end date
 	expects start and end to be timestamps
 **/
-var date = {
+Count.date = {
 	oneSong: function(songId, range) {
 		return byDate({song_id: songId}, range);
 	},
@@ -122,7 +124,7 @@ var date = {
 /**
 	counts all performances in a specified venue/city
 **/
-var venue = {
+Count.venue = {
 	oneSong: function(songId, location) {
 		return byVenue({song_id: songId}, location);
 	},
@@ -134,7 +136,7 @@ var venue = {
 /**
 	counts all performances in a specified city/state/country
 **/
-var city = {
+Count.city = {
 	oneSong: function(songId, location) {
 		return byCity({song_id: songId}, location);
 	},
@@ -146,7 +148,7 @@ var city = {
 /**
 	counts all performances in a specified state
 **/
-var state = {
+Count.state = {
 	oneSong: function(songId, state) {
 		return byState({song_id: songId}, state)
 	},
@@ -159,7 +161,7 @@ var state = {
 /**
 	counts all performances in a specified country
 **/
-var country = {
+Count.country = {
 	oneSong: function(songId, country) {
 		return byCountry({song_id: songId}, country);
 	},
@@ -168,19 +170,5 @@ var country = {
 	} 
 }
 
-/**
-	all location based count functions
-**/
-var location = {
-	venue: venue,
-	city: city,
-	state: state,
-	country: country
-} 
 
-module.exports = {
-	all: all,
-	album: album,
-	date: date,
-	location: location
-}; 
+module.exports = Count;

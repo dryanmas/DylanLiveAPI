@@ -1,5 +1,5 @@
 var db = require('../db');
-var Count = require('../helpers/count');
+var Count = require('../dataBuilder/count');
 
 var songs = require('./data').songs;
 var shows = require('./data').shows;
@@ -60,7 +60,7 @@ describe('Count', function() {
 	})
 
 	it('by venue', function() {
-		var counter = Count.location.venue.oneSong;
+		var counter = Count.venue.oneSong;
 
 		return counter(songs[0].id, ['USANA', 'Salt Lake City'])
 		.then(function(amount) {
@@ -73,7 +73,7 @@ describe('Count', function() {
 	})
 
 	it('total by venue', function() {
-		var counter = Count.location.venue.total;
+		var counter = Count.venue.total;
 
 		return counter(['House show', 'Medford'])
 		.then(function(amount) {
@@ -82,7 +82,7 @@ describe('Count', function() {
 	})
 
 	it('by city', function() {
-		var counter = Count.location.city.oneSong;
+		var counter = Count.city.oneSong;
 
 		return counter(songs[1].id, ['Tukluck', 'Tennessee', 'United States'])
 		.then(function(amount) {
@@ -99,7 +99,7 @@ describe('Count', function() {
 	})
 
 	it('total by city', function() {
-		var counter = Count.location.city.total;
+		var counter = Count.city.total;
 
 		return counter(['Salt Lake City', 'Utah', 'United States'])
 		.then(function(amount) {
@@ -108,7 +108,7 @@ describe('Count', function() {
 	})
 
 	it('by state', function() {
-		var counter = Count.location.state.oneSong;
+		var counter = Count.state.oneSong;
 
 		return counter(songs[0].id, 'Utah')
 		.then(function(amount) {
@@ -117,7 +117,7 @@ describe('Count', function() {
 	})
 
 	it('total by state', function() {
-		var counter = Count.location.state.total;
+		var counter = Count.state.total;
 
 		return counter('Tennessee')
 		.then(function(amount) {
@@ -126,7 +126,7 @@ describe('Count', function() {
 	})
 
 	it('by country', function() {
-		var counter = Count.location.country.oneSong;
+		var counter = Count.country.oneSong;
 
 		return counter(songs[0].id, 'United States')
 		.then(function(amount) {
@@ -139,7 +139,7 @@ describe('Count', function() {
 	})
 
 	it('total by country', function() {
-		var counter = Count.location.country.total;
+		var counter = Count.country.total;
 
 		return counter('Spain')
 		.then(function(amount) {

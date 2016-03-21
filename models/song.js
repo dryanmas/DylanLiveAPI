@@ -1,6 +1,6 @@
 var db = require('../db');
 var Promise = require('bluebird');
-var count = require('../helpers/count');
+var count = require('../dataBuilder/count');
 var helpers = require('./helpers');
 
 var Song = {};
@@ -40,7 +40,7 @@ Song.byTitle = function(title) {
 	start inclusive, end exclusive and optional
 	expects start and end to be timestamps
 **/
-Song.byDate = function(range) {
+Song.date = function(range) {
 	var start = range[0]
 	var end = range[1] || Math.floor((Date.now()/1000)) + 1000000;
 
@@ -57,7 +57,7 @@ Song.byDate = function(range) {
 /**
 	returns all songs off of an album 
 **/
-Song.byAlbum = function(album) {
+Song.album = function(album) {
 	return db('songs').select('*')
 	.where({release: album})
 	.orderBy('title')
@@ -92,12 +92,10 @@ Song.allUnique = function(songs) {
 
 /** ALL LOCATION BASED METHODS **/
 
-Song.location = {}
-
 /**
 	returns all songs by venue/city
 **/
-Song.location.venue = function(location) {
+Song.venue = function(location) {
 	return db.select('*').from('songs')
 	.whereIn('songs.id', function() {
 		this.select('song_id').from('shows')
@@ -111,7 +109,7 @@ Song.location.venue = function(location) {
 /**
 	returns all songs by city/state/country
 **/
-Song.location.city = function(location) {
+Song.city = function(location) {
 	return db.select('*').from('songs')
 	.whereIn('songs.id', function() {
 		this.select('song_id').from('shows')
@@ -126,7 +124,7 @@ Song.location.city = function(location) {
 /**
 	returns all songs by state
 **/
-Song.location.state = function(state) {
+Song.state = function(state) {
 	return db.select('*').from('songs')
 	.whereIn('songs.id', function() {
 		this.select('song_id').from('shows')
@@ -139,7 +137,7 @@ Song.location.state = function(state) {
 /**
 	returns all songs by country
 **/
-Song.location.country = function(country) {
+Song.country = function(country) {
 	return db.select('*').from('songs')
 	.whereIn('songs.id', function() {
 		this.select('song_id').from('shows')
