@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var stateLookup = require('./stateLookup');
 
 var Show = require('../models/show.js');
-var Setlist = require('../models/setlist.js');
+var Setlist = require('./setlistModel.js');
 
 var ShowScraper = function() {
 	return getStartUrl()

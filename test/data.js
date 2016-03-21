@@ -1,5 +1,5 @@
 var db = require('../db');
-var Setlist = require('../models/setlist');
+var Setlist = require('../scraper/models/setlist');
 var Promise = require('bluebird');
 
 var songs = [ 

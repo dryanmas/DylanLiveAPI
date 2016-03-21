@@ -1,7 +1,7 @@
 var db = require('../db.js');
-var Song = require('../models/song');
-var Show = require('../models/show');
-var Setlist = require('../models/setlist');
+var Song = require('../scraper/models/song');
+var Show = require('../scraper/models/show');
+var Setlist = require('../scraper/models/setlist');
 
 var songs = require('./data').songs;
 var shows = require('./data').shows;

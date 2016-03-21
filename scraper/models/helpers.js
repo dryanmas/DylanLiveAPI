@@ -1,4 +1,4 @@
-var db = require('../db');
+var db = require('../../db');
 var Promise = require('bluebird');
 
 var helpers = {}

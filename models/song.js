@@ -1,13 +1,11 @@
 var db = require('../db');
 var Promise = require('bluebird');
 var count = require('../dataBuilder/count');
-var helpers = require('./helpers');
 
 var Song = {};
 
 /**
 	returns all songs ordered alphabetically
-	TODO: modularize the count logic 
 **/
 Song.all = function() {
 	return db('songs').select('*')
@@ -62,35 +60,6 @@ Song.album = function(album) {
 	.where({release: album})
 	.orderBy('title')
 }
-
-/**
-	inserts an array of songs, returning an array of ids
-**/
-Song.insert = function(songs) {
-	return Song.allUnique(songs)
-	.then(function() {		
-		return db('songs').insert(songs).returning('id'); 
-	})
-}
-
-/**
-	checks that a song is not already in the DB
-**/
-Song.checkUnique = function(song) {
-	return Song.byTitle(song.title)
-	.then(function(exists) {
-		if (exists) throw 'Duplicate song!';
-	})
-}
-
-/**
-	checks that none of the songs are already in the DB
-**/
-Song.allUnique = function(songs) {
-	return Promise.all(songs.map(Song.checkUnique));
-}
-
-/** ALL LOCATION BASED METHODS **/
 
 /**
 	returns all songs by venue/city
