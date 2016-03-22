@@ -1,7 +1,7 @@
 var axios = require('axios');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
-var Song = require('../models/song');
+var Song = require('./models/song');
 
 var SongScraper = function(){
 	var songsUrl = "http://bobdylan.com/songs-played-live/";
@@ -15,11 +15,13 @@ var SongScraper = function(){
 		return Promise.all(mapped);
 	})
 	.then(function(songs) {
-		console.log('about to insert')
 		return Song.insert(songs);
 	})
 	.then(function() {
 		console.log('donesies');
+	})
+	.catch(function(err) {
+		console.log('error:', err)
 	})
 }
 
@@ -54,7 +56,7 @@ var buildSong = function($, el) {
 
 //checks to see if a song is not already in the DB
 var isNew = function(song){
-	return Song.findByTitle(song.title)
+	return Song.byTitle(song.title)
 	.then(function(exists) {
 		return !exists;
 	})
