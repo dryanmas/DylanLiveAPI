@@ -6,13 +6,13 @@ var Criteria = require('./criteria');
 	builds out an indiviudal unit of songs
 **/
 var buildSongs = Promise.coroutine(function *(value, methods) {	
-	var arr = yield methods.getSongs(value);
+	var songs = yield methods.getSongs(value);
 
-	for (var i = 0; i < arr.length; i++) {
-		arr.count = yield methods.count.oneSong(arr[i].id, value);
+	for (var i = 0; i < songs.length; i++) {
+		songs[i].count = yield methods.count.oneSong(songs[i].id, value);
 	}
 
-	return arr;
+	return songs;
 })
 
 /**
@@ -26,13 +26,14 @@ var builder = Promise.coroutine(function *(type, methods) {
 		var value = methods.toValue(collection[i]);
 		var key = methods.toString(collection[i]);
 
-		if (type === 'show') {
-			var entry = yield methods.getShows(value);
-		} else {
+		//data shape with be different in songs vs shows
+		if (type === 'song') {
 			var entry = {
 				all: yield buildSongs(value, methods),
 				total: yield methods.count.total(value) 
-			}
+			} 
+		}	else {
+			var entry = yield methods.getShows(value);
 		}
 
 		data[key] = entry; 

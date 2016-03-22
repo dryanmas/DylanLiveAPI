@@ -40,7 +40,8 @@ describe('Builders', function() {
     })
   })
 
-  it('should build by month', function() {
+  it('should build by month', function(done) {
+     this.timeout(3000)
     return SongBuilder('month')
     .then(function(data) {
       expect(Object.keys(data).length).to.equal(7);
@@ -52,7 +53,9 @@ describe('Builders', function() {
     .then(function(data) {
       expect(Object.keys(data).length).to.equal(7);
       expect(data['6-1977'].length).to.equal(1);
+      done();
     })
+    // done();
   })
 
   it('should build by venue', function() {
@@ -87,6 +90,7 @@ describe('Builders', function() {
   it('should build by state', function() {
     return SongBuilder('state')
     .then(function(data) {
+      var test = data.Utah;
       expect(Object.keys(data).length).to.equal(3);
       expect(data['Utah'].all.length).to.equal(7);
 
