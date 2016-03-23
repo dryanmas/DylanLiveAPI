@@ -1,6 +1,9 @@
 var Where = {};
 
 Where.date = function(range, query) {
+  //TODO: figure out if this is necessary
+  range[1] = range[1] || Math.floor((Date.now()/1000)) + 1000000;
+  
   return query.where('date', '>=', range[0])
   .andWhere('date', '<', range[1]);
 }

@@ -1,7 +1,16 @@
 var db = require('../db');
-
+var where = require('../models/where');
 /** MISC COUNT HELPERS **/
 
+
+var countBy = function(type, criteria, idCheck) {
+	var query = db('shows').count('*')
+	.leftJoin('live_songs', 'shows.id', 'live_songs.show_id');
+
+	return where[type](criteria, query)
+	.andWhere(idCheck)
+	.then(parse)
+}
 /**
 	helper function to grab and parse counts
 **/
@@ -9,72 +18,6 @@ var parse = function(rows) {
 	return parseInt(rows[0].count);
 }
 
-/**
-	counts songs between start and optional end date
-	expects start and end to be timestamps
-**/
-var byDate = function(idCheck, range) {
-	var start = range[0]
-	end = range[1] || Math.floor((Date.now()/1000)) + 1000000;
-
-	return db('shows').count('*')
-	.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
- 	.where(idCheck)
- 	.andWhere('date', '>=', start)
- 	.andWhere('date', '<', end)
-	.then(parse)
-}
-
-/**
-	counts songs performed at a specified venue/city
-**/
-var byVenue = function(idCheck, location) {
-		return db('shows').count('*')
-		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
-		.where(idCheck)
-		.andWhere({venue: location[0]})
-		.andWhere({city: location[1]})
-		.then(parse)
-}
-
-/**
-	counts songs by city performed
-**/
-var byCity = function(idCheck, location) {
-	return db('shows').count('*')
-	.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
-	.where(idCheck)
-	.andWhere({city: location[0]})
-	.andWhere({state: location[1]})
-	.andWhere({country: location[2]})
-	.then(parse)
-}
-
-/**
-	counts songs by location performed
-**/
-var byLocation = function(locationType) {
-	return function(idCheck, location) {
-		var locationCheck = {}
-		locationCheck[locationType] = location;
-
-		return db('shows').count('*')
-		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
-		.where(idCheck)
-		.andWhere(locationCheck)
-		.then(parse)
-	}
-}
-
-/**
-	counts songs by state performed
-**/
-var byState = byLocation('state');
-
-/**
-	counts songs by country performed
-**/
-var byCountry = byLocation('country');
 
 var Count = {};
 
@@ -112,12 +55,13 @@ Count.album = {
 	counts all performances between a start and optional end date
 	expects start and end to be timestamps
 **/
+
 Count.date = {
 	oneSong: function(songId, range) {
-		return byDate({song_id: songId}, range);
+		return countBy('date', range, {song_id: songId});
 	},
 	total: function(range) {
-		return byDate({}, range);
+		return countBy('date', range, {});	
 	} 
 } 
 
@@ -126,10 +70,10 @@ Count.date = {
 **/
 Count.venue = {
 	oneSong: function(songId, location) {
-		return byVenue({song_id: songId}, location);
+		return countBy('venue', location, {song_id: songId});
 	},
 	total: function(location) {
-		return byVenue({}, location);
+		return countBy('venue', location, {});
 	}
 }
 
@@ -138,10 +82,10 @@ Count.venue = {
 **/
 Count.city = {
 	oneSong: function(songId, location) {
-		return byCity({song_id: songId}, location);
+		return countBy('city', location, {song_id: songId});
 	},
 	total: function(location) {
-		return byCity({}, location);
+		return countBy('city', location, {});
 	}
 } 
 
@@ -150,10 +94,10 @@ Count.city = {
 **/
 Count.state = {
 	oneSong: function(songId, state) {
-		return byState({song_id: songId}, state)
+		return countBy('state', state, {song_id: songId});
 	},
 	total: function(state) {
-		return byState({}, state);
+		return countBy('state', state, {});
 	} 
 }
 
@@ -163,10 +107,10 @@ Count.state = {
 **/
 Count.country = {
 	oneSong: function(songId, country) {
-		return byCountry({song_id: songId}, country);
+		return countBy('country', country, {song_id: songId});
 	},
 	total: function(country) {
-		return byCountry({}, country);
+		return countBy('country', country, {});
 	} 
 }
 
