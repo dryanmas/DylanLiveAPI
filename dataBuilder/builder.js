@@ -16,6 +16,19 @@ var buildSongs = Promise.coroutine(function *(value, methods) {
 })
 
 /**
+	builds out an indiviudal unit of shows
+**/
+var buildShows = Promise.coroutine(function *(value, methods) {	
+	var shows = yield methods.getShows(value);
+
+	for (var i = 0; i < shows.length; i++) {
+		shows[i].setlist = yield methods.getSetlist(shows[i].id);
+	}
+
+	return shows;
+})
+
+/**
 	builds out full collection of data 
 **/
 var builder = Promise.coroutine(function *(type, methods) {
@@ -33,7 +46,7 @@ var builder = Promise.coroutine(function *(type, methods) {
 				total: yield methods.count.total(value) 
 			} 
 		}	else {
-			var entry = yield methods.getShows(value);
+			var entry = yield buildShows(value, methods);
 		}
 
 		data[key] = entry; 

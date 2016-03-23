@@ -21,6 +21,7 @@ describe('Builders', function() {
 		})
     .then(function(data) {
       expect(data['2010s'].length).to.equal(2);
+      expect(data['2010s'][0].setlist.length).to.equal(2);
       expect(data['1980s'].length).to.equal(0);
     })
 	})
@@ -36,6 +37,7 @@ describe('Builders', function() {
     })    
     .then(function(data) {
       expect(data['1966'].length).to.equal(1);
+      expect(data['1966'][0].setlist.length).to.equal(3);
       expect(data['1992'].length).to.equal(0);
     })
   })
