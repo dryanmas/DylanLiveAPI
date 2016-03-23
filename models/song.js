@@ -1,6 +1,7 @@
 var db = require('../db');
 var Promise = require('bluebird');
 var count = require('../dataBuilder/count');
+var where = require('./where');
 
 var Song = {};
 
@@ -25,12 +26,18 @@ Song.addCount = function(songs) {
 	}))
 }
 
+var findBy = function(type, criteria) {
+	var innerQuery = function() {
+		var that = this;
+		var query = that.select('song_id').from('shows')
+		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id');
+ 	 	
+ 	 	return where[type](criteria, query);
+	}
 
-/**
-	returns a song with a given title
-**/
-Song.byTitle = function(title) {
-	return helpers.find(title, 'title', 'songs');
+	return db.select('*').from('songs')
+	.whereIn('songs.id', innerQuery)
+	.orderBy('title')
 }
 
 /**
@@ -39,17 +46,7 @@ Song.byTitle = function(title) {
 	expects start and end to be timestamps
 **/
 Song.date = function(range) {
-	var start = range[0]
-	var end = range[1] || Math.floor((Date.now()/1000)) + 1000000;
-
-	return db.select('*').from('songs')
-	.whereIn('songs.id', function() {
-		this.select('song_id').from('shows')
-		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
- 	 	.andWhere('date', '>=', start)
- 	 	.andWhere('date', '<', end)
-	})
-	.orderBy('title')
+	return findBy('date', range);
 }
 
 /**
@@ -65,55 +62,28 @@ Song.album = function(album) {
 	returns all songs by venue/city
 **/
 Song.venue = function(location) {
-	return db.select('*').from('songs')
-	.whereIn('songs.id', function() {
-		this.select('song_id').from('shows')
-		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
-		.where({venue: location[0]})
-		.andWhere({city: location[1]})
-	})
-	.orderBy('title')
+	return findBy('venue', location);
 }
 
 /**
 	returns all songs by city/state/country
 **/
 Song.city = function(location) {
-	return db.select('*').from('songs')
-	.whereIn('songs.id', function() {
-		this.select('song_id').from('shows')
-		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
-		.where({city: location[0]})
-		.andWhere({state: location[1]})
-		.andWhere({country: location[2]})
-	})
-	.orderBy('title')
+	return findBy('city', location);
 }
 
 /**
 	returns all songs by state
 **/
 Song.state = function(state) {
-	return db.select('*').from('songs')
-	.whereIn('songs.id', function() {
-		this.select('song_id').from('shows')
-		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
-		.where({state: state})
-	})
-	.orderBy('title')
+	return findBy('state', state);
 }
 
 /**
 	returns all songs by country
 **/
 Song.country = function(country) {
-	return db.select('*').from('songs')
-	.whereIn('songs.id', function() {
-		this.select('song_id').from('shows')
-		.leftJoin('live_songs', 'shows.id', 'live_songs.show_id')
-		.where({country: country})
-	})
-	.orderBy('title')
+	return findBy('country', country);
 }
 
 module.exports = Song;
