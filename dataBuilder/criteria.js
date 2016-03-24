@@ -3,7 +3,7 @@ var Collection = require('./collection');
 var ToString = require('./toString');
 var ToValue = require('./toValue');
 var getSetlist = require('./getSetlist');
-var DataBy = require('./dataRetriever');
+var DataBy = require('./getData');
 
 var criteria = {};
 
