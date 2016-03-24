@@ -94,7 +94,7 @@ describe('Scraper', function() {
 			expect(rows).to.be.undefined;
 		})
 		.catch(function(err) {
-			expect(err).to.equal('Could not insert setlist');
+			expect(err).to.equal('Could not insert setlist; songs do not exist');
 		})
 	})
 

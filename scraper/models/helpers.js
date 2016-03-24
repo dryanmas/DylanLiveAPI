@@ -30,6 +30,8 @@ helpers.mapSetlist = function(titles, showId) {
 	return Promise.all(titles.map(function(title, i) {
 		return db('songs').select('id').where({title: title})
 		.then(function(rows) {
+			if(!rows.length) throw 'Could not insert setlist; songs do not exist';
+
 			return {
 				song_id: rows[0].id,
 				show_id: showId,

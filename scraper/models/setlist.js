@@ -10,11 +10,9 @@ var Setlist = {};
 Setlist.insertOne = function(titles, showId) {
 	return helpers.mapSetlist(titles, showId)
 	.then(function(songs) {
+
 		return db('live_songs').insert(songs).returning('id')
 	})
-	.catch(function() {
-		throw 'Could not insert setlist';
-	}) 
 }
 
 /**
