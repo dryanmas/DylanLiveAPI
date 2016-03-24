@@ -14,9 +14,12 @@ var ShowScraper = function() {
 
 		return parseShow(url, []);
 	})
-	.then(saveShow)
+	.then(saveShows)
 	.then(function() {
 		console.log('donesies');
+	})
+	.catch(function(err) {
+		console('error:', err)
 	})
 }
 
@@ -93,7 +96,6 @@ var getTimestamp = function(date) {
 
 var parseLocation = function(location) {
 	var parsed = {}
-	console.log('location', location);
 	
 	if (!location) return null;
 	

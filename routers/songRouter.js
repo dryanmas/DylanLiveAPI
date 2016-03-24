@@ -1,17 +1,10 @@
 var router = require('express').Router();
-var dateRouter = require('./songByDateRouter');
-var locationRouter = require('./songByLocationRouter');
-var Song = require('../models/song');
-
-router.use('/date', dateRouter);
-router.use('/location', locationRouter);
+var AllSongs = require('../dataBuilder/all').songs;
+var SongBuilder = require('../dataBuilder/builder').song;
 
 //get all songs
 router.get('/', function(req, res) {
-	Song.all().then(function(songs) {
-		return Song.addCount(songs)
-	})
-	.then(function(songs) {
+	AllSongs().then(function(songs) {
 		res.status(200).send({songs: songs});
 	})
 	.catch(function() {
@@ -20,8 +13,14 @@ router.get('/', function(req, res) {
 	})
 })
 
-router.get('/album', function(req, res) {
-	
+router.get('/:criterion', function(req, res) {
+	SongBuilder(criterion).then(function(data) {
+		res.status(200).send(data);
+	})
+	.catch(function() {
+		console.log('could not get songs; improper criterion');
+		res.sendStatus(400);	
+	})
 })
 
 

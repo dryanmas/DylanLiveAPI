@@ -1,5 +1,3 @@
-var db = require('../db');
-
 var getSetlist = require('../dataBuilder/getSetlist');
 var songs = require('./data').songs;
 var shows = require('./data').shows;

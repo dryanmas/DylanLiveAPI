@@ -1,4 +1,3 @@
-var db = require('../db');
 var SongBuilder = require('../dataBuilder/builder').song;
 var ShowBuilder = require('../dataBuilder/builder').show;
 var songs = require('./data').songs;

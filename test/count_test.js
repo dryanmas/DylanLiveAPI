@@ -1,4 +1,3 @@
-var db = require('../db');
 var Count = require('../dataBuilder/count');
 
 var songs = require('./data').songs;

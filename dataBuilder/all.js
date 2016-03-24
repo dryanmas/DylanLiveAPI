@@ -1,7 +1,7 @@
 var db = require('../db');
 var Promise = require('bluebird');
 
-var getSetlist = require('./setlist');
+var getSetlist = require('./getSetlist');
 var songCount = require('./count').all;
 
 var getShows = function() {
@@ -37,7 +37,7 @@ var addCount = function(song) {
 }
 
 module.exports = {
-  song: getSongs,
-  show: getShows
+  songs: getSongs,
+  shows: getShows
 }
 
