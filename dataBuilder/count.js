@@ -1,7 +1,7 @@
 var db = require('../db');
-var where = require('../models/where');
-/** MISC COUNT HELPERS **/
+var where = require('./where');
 
+/** MISC COUNT HELPERS **/
 
 var countBy = function(type, criteria, idCheck) {
 	var query = db('shows').count('*')
@@ -56,14 +56,18 @@ Count.album = {
 	expects start and end to be timestamps
 **/
 
-Count.date = {
+var byDate = {
 	oneSong: function(songId, range) {
 		return countBy('date', range, {song_id: songId});
 	},
 	total: function(range) {
 		return countBy('date', range, {});	
 	} 
-} 
+}
+
+Count.month = byDate;
+Count.year = byDate;
+Count.decade = byDate; 
 
 /**
 	counts all performances in a specified venue/city

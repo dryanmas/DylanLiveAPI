@@ -2,9 +2,8 @@ var Count = require('./count');
 var Collection = require('./collection');
 var ToString = require('./toString');
 var ToValue = require('./toValue');
-var Song = require('../models/song');
-var Show = require('../models/show');
-var Setlist = require('../models/setlist');
+var getSetlist = require('./getSetlist');
+var DataBy = require('./dataRetriever');
 
 var criteria = {};
 
@@ -34,10 +33,9 @@ for (var criterion in criteria) {
   criteria[criterion].getCollection = Collection[criterion];
   criteria[criterion].toString = ToString[criterion];
   criteria[criterion].toValue = ToValue[criterion];
-  criteria[criterion].count = Count[criterion] || Count[type];
-  criteria[criterion].getSongs = Song[criterion] || Song[type];
-  criteria[criterion].getShows = Show[criterion] || Show[type];
-  criteria[criterion].getSetlist = Setlist.getOne;
+  criteria[criterion].count = Count[criterion]; 
+  criteria[criterion].getSetlist = getSetlist;
+  criteria[criterion].getData = DataBy[criterion];
 }
 
 module.exports = criteria;

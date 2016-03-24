@@ -30,7 +30,7 @@ describe('Count', function() {
 	})
 
 	it('by date', function() {
-		var counter = Count.date.oneSong;
+		var counter = Count.month.oneSong;
 
 		var id = songs[0].id;
 		var start = getTimestamp('Jan 1 1980');
@@ -50,7 +50,7 @@ describe('Count', function() {
 	})
 
 	it('total by date', function() {
-		var counter = Count.date.total;
+		var counter = Count.month.total;
 
 		var start = getTimestamp('Jun 2 1991');
 		return counter([start])

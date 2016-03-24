@@ -53,7 +53,7 @@ Collection.month = Promise.coroutine(function *() {
 			var startStamp = Math.floor(start.getTime()/1000); 
 			var endStamp = Math.floor(end.getTime()/1000);
 
-			var amount = yield Count.date.total([startStamp, endStamp]);
+			var amount = yield Count.month.total([startStamp, endStamp]);
 			if (amount) months.push([month+1, year]);
 		}
 	}

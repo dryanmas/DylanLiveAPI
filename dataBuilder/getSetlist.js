@@ -1,18 +1,13 @@
 var db = require('../db');
 var Promise = require('bluebird');
 
-Setlist = {};
-
-Setlist.getOne = function(showId) {
+/**
+  random stand alone function that really doesnt belong anywhere else
+  gets a setlist for a show
+**/
+module.exports = function(showId) {
   return db('songs').select('songs.*')
   .innerJoin('live_songs', 'songs.id', 'live_songs.song_id')
   .where({show_id: showId})
   .orderBy('rank')
 }
-
-//this is probably unnecessary 
-// Setlist.getAll = function(shows) {
-//   return Promise.all(shows.map(Setlist.getOne));
-// }
-
-module.exports = Setlist;

@@ -6,7 +6,7 @@ var Criteria = require('./criteria');
 	builds out an indiviudal unit of songs
 **/
 var buildSongs = Promise.coroutine(function *(value, methods) {	
-	var songs = yield methods.getSongs(value);
+	var songs = yield methods.getData('song', value)
 
 	for (var i = 0; i < songs.length; i++) {
 		songs[i].count = yield methods.count.oneSong(songs[i].id, value);
@@ -19,7 +19,7 @@ var buildSongs = Promise.coroutine(function *(value, methods) {
 	builds out an indiviudal unit of shows
 **/
 var buildShows = Promise.coroutine(function *(value, methods) {	
-	var shows = yield methods.getShows(value);
+	var shows = yield methods.getData('show', value);
 
 	for (var i = 0; i < shows.length; i++) {
 		shows[i].setlist = yield methods.getSetlist(shows[i].id);

@@ -43,7 +43,7 @@ describe('Builders', function() {
   })
 
   it('should build by month', function(done) {
-     this.timeout(3000)
+     this.timeout(4000)
     return SongBuilder('month')
     .then(function(data) {
       expect(Object.keys(data).length).to.equal(7);
