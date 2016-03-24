@@ -14,11 +14,13 @@ router.get('/', function(req, res) {
 })
 
 router.get('/:criterion', function(req, res) {
+	var criterion = req.params.criterion;
+
 	SongBuilder(criterion).then(function(data) {
 		res.status(200).send(data);
 	})
 	.catch(function() {
-		console.log('could not get songs; improper criterion');
+		console.log('could not get songs');
 		res.sendStatus(400);	
 	})
 })

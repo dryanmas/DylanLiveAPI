@@ -33,7 +33,8 @@ var buildShows = Promise.coroutine(function *(value, methods) {
 **/
 var builder = Promise.coroutine(function *(type, methods) {
 	var data = {};
-	var collection = yield methods.getCollection();
+	var collection = yield methods.getCollection()
+	.filter(function(item) {return item !== ""});
 
 	for (var i = 0; i < collection.length; i++) {
 		var value = methods.toValue(collection[i]);

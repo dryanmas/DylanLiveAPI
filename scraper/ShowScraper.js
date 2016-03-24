@@ -116,7 +116,6 @@ var parseLocation = function(location) {
 	} else {
 		parsed.country = stateOrCountry;
 	}
-	console.log('location', parsed);
 
 	return parsed
 }
